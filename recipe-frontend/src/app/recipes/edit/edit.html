@@ -1,0 +1,23 @@
+<h2>Modifier la recette</h2>
+
+<div>
+  <label>Titre :</label>
+  <input [(ngModel)]="recette.titre" placeholder="Titre de la recette" />
+</div>
+
+<div>
+  <label>Description :</label>
+  <textarea [(ngModel)]="recette.description" placeholder="Description"></textarea>
+</div>
+
+<div>
+  <label>Ingrédients :</label>
+  <input [(ngModel)]="ingredientInput" placeholder="Ajouter un ingrédient" />
+  <button (click)="addIngredient()">Ajouter</button>
+</div>
+
+<ul>
+  <li *ngFor="let ing of recette.ingredients">{{ ing }}</li>
+</ul>
+
+<button (click)="save()">Enregistrer les modifications</button>
