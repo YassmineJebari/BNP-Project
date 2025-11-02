@@ -1,9 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './shared/components/navbar/navbar'; // ton composant
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true, // ✅ important si ce composant n’est pas dans un module
+  imports: [RouterOutlet, NavbarComponent], // ✅ ajoute NavbarComponent ici
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
