@@ -1,21 +1,37 @@
 import { Routes } from '@angular/router';
-import { SignIn } from './auth/sign-in/sign-in';
-import { SignUp } from './auth/sign-up/sign-up';
-import { List } from './recipes/list/list';
-import { Add } from './recipes/add/add';
-import { Edit } from './recipes/edit/edit';
-import { Detail } from './recipes/detail/detail';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
-  { path: 'sign-in', component: SignIn },
-  { path: 'sign-up', component: SignUp },
-  { path: '**', redirectTo: '/sign-in' },
-  { path: '', redirectTo: 'recipes', pathMatch: 'full' },
-  { path: 'recipes', component: List },
-  { path: 'recipes/add', component: Add },
-  { path: 'recipes/edit/:id', component: Edit },
-  { path: 'recipes/detail/:id', component: Detail },
-  { path: '**', redirectTo: 'recipes' }
+  // Feature Auth (lazy loading)
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes')
+      .then(m => m.AUTH_ROUTES)
+  },
+  
+  // Feature Recipes (lazy loading)
+  {
+    path: 'recipes',
+    loadChildren: () => import('./features/recipes/recipes.routes')
+      .then(m => m.RECIPES_ROUTES)
+  },
+  
+  // Feature Chatbot (lazy loading)
+  //{
+   // path: 'chatbot',
+   // loadChildren: () => import('./features/chatbot/chatbot.routes')
+   //   .then(m => m.CHATBOT_ROUTES)
+  //},
+  
+  // Route par défaut : rediriger vers auth
+  { 
+    path: '', 
+    redirectTo: 'auth/sign-in',  // ← Sans le "/" au début
+    pathMatch: 'full' 
+  },
+  
+  // 404 - Toutes les routes invalides
+  { 
+    path: '**', 
+    redirectTo: 'auth/sign-in'  // ← Sans le "/" au début
+  }
 ];
-

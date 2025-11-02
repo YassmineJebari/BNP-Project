@@ -1,0 +1,110 @@
+/* === Navbar générale === */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  position: fixed;
+  padding: 8px 40px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box; /* ✅ garantit que padding n'élargit pas la barre */
+}
+
+
+
+/* Espace sous la barre fixe */
+
+
+/* === Nom de la marque === */
+.brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #206a5d;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap; /* ✅ empêche le retour à la ligne */
+}
+
+/* === Barre de recherche === */
+.navbar-center {
+  position: relative;
+  flex: 1;
+  max-width: 400px; /* 🔧 un peu plus large mais garde de la place */
+  margin: 0 1.5rem;  /* 🔧 réduit les marges */
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 32px 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #206a5d;
+  box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* === Liens === */
+.navbar-right {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0; /* ✅ empêche la réduction du bloc de liens */
+}
+
+.navbar-right a {
+  text-decoration: none;
+  color: #444;
+  font-weight: 500;
+  transition: color 0.2s;
+  white-space: nowrap;
+  padding: 14px 16px;
+}
+
+.navbar-right a:hover {
+  color: #206a5d;
+}
+
+.navbar-right a.active {
+  color: #ecf8f6;
+  font-weight: 600;
+  background-color: #206a5d;
+}
+
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar-center {
+    order: 3;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .navbar-right {
+    order: 2;
+  }
+}
