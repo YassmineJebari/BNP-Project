@@ -1,26 +1,5 @@
-<main class="main">
-  <div class="content">
-    <div class="left-side">
-      <h1>Hello, {{ title }}</h1>
-      <p>Congratulations! Your app is running. 🎉</p>
-    </div>
+<app-navbar></app-navbar>
 
-    <div class="divider" role="separator" aria-label="Divider"></div>
-
-    <div class="right-side">
-      <div class="pill-group">
-        <a
-          class="pill"
-          *ngFor="let item of pillItems"
-          [href]="item.link"
-          target="_blank"
-          rel="noopener"
-        >
-          <span>{{ item.title }}</span>
-        </a>
-      </div>
-    </div>
-  </div>
+<main>
+  <router-outlet></router-outlet>
 </main>
-
-<router-outlet></router-outlet>

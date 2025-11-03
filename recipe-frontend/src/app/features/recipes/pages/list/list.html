@@ -1,0 +1,11 @@
+<h2>Liste des recettes</h2>
+
+<ul>
+  <li *ngFor="let recette of recettes">
+    {{ recette.titre }} - {{ recette.description }}
+    <a [routerLink]="['/recipes/detail', recette.id]">Voir détails</a>
+    <button [routerLink]="['/recipes/edit', recette.id]">Modifier</button>
+  </li>
+</ul>
+
+<button [routerLink]="['/recipes/add']">Ajouter une recette</button>
