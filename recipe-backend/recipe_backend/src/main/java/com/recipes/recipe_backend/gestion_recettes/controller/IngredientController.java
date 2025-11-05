@@ -1,7 +1,7 @@
-package com.recipes.recipe_backend.controller;
+package com.recipes.recipe_backend.gestion_recettes.controller;
 
-import com.recipes.recipe_backend.entity.Ingredient;
-import com.recipes.recipe_backend.service.IngredientService;
+import com.recipes.recipe_backend.gestion_recettes.entity.Ingredient;
+import com.recipes.recipe_backend.gestion_recettes.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

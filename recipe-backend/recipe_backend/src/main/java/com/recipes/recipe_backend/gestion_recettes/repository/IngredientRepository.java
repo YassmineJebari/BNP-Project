@@ -1,6 +1,6 @@
-package com.recipes.recipe_backend.repository;
+package com.recipes.recipe_backend.gestion_recettes.repository;
 
-import com.recipes.recipe_backend.entity.Ingredient;
+import com.recipes.recipe_backend.gestion_recettes.entity.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

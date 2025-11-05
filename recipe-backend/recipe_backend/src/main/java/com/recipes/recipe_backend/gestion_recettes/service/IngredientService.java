@@ -1,41 +1,36 @@
-package com.recipes.recipe_backend.service;
+package com.recipes.recipe_backend.gestion_recettes.service;
 
-import com.recipes.recipe_backend.entity.Ingredient;
-import com.recipes.recipe_backend.repository.IngredientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.recipes.recipe_backend.gestion_recettes.entity.Ingredient;
+import com.recipes.recipe_backend.gestion_recettes.repository.IngredientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class IngredientService {
+    private final IngredientRepository ingredientRepository;
 
-    @Autowired
-    private IngredientRepository ingredientRepository;
-
-    public Ingredient create(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
-    }
-
-    public List<Ingredient> findAll() {
+    public List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
     }
 
-    public Ingredient findById(int id) {
-        return ingredientRepository.findById(id).orElse(null);
+    public Optional<Ingredient> getIngredientById(Long id) {
+        return ingredientRepository.findById(id);
     }
 
-    public Ingredient update(int id, Ingredient ingredient) {
-        Ingredient existingIngredient = ingredientRepository.findById(id).orElse(null);
-        if (existingIngredient != null) {
-            existingIngredient.setName(ingredient.getName());
-            existingIngredient.setIngredientType(ingredient.getIngredientType());
-            return ingredientRepository.save(existingIngredient);
-        }
-        return null;
+    public Ingredient createIngredient(Ingredient ingredient) {
+        return ingredientRepository.save(ingredient);
     }
 
-    public void delete(int id) {
+    public Ingredient updateIngredient(Long id, Ingredient ingredient) {
+        ingredient.setId(id);
+        return ingredientRepository.save(ingredient);
+    }
+
+    public void deleteIngredient(Long id) {
         ingredientRepository.deleteById(id);
     }
 }

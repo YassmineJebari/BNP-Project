@@ -1,5 +1,10 @@
-package com.recipes.recipe_backend.entity;
+package com.recipes.recipe_backend.gestion_recettes.entity;
+import jakarta.persistence.*;
+import lombok.Data;
 
+@Entity
+@Table(name = "ingredients")
+@Data
 public class Ingredient {
     private int id;
     private String name;

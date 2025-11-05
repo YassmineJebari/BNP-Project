@@ -1,37 +1,73 @@
-package com.example.gestion_utilisateur.entity;
+package com.recipes.recipe_backend.gestion_utilisateur.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "User")  // nom de la table
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String firstname;
-    private String lastname;
+    @NotBlank(message = "Le nom d'utilisateur est obligatoire")
+    @Size(min = 3, max = 50, message = "Le nom d'utilisateur doit contenir entre 3 et 50 caractères")
+    @Column(unique = true, nullable = false, length = 50)
+    private String username;
+    
+    @NotBlank(message = "L'email est obligatoire")
+    @Email(message = "L'email doit être valide")
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
-    private String role;
-
-    // Constructeurs
-    public User() {}
-    public User(String firstname, String lastname, String email, String role) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.role = role;
-    }
-
-    // Getters & Setters
-    public Long getId() { return id; }
-    public String getFirstname() { return firstname; }
-    public void setFirstname(String firstname) { this.firstname = firstname; }
-    public String getLastname() { return lastname; }
-    public void setLastname(String lastname) { this.lastname = lastname; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    @Column(nullable = false)
+    private String password;  // ✅ Mot de passe hashé (BCrypt)
+    
+    // Informations personnelles optionnelles
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+    
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+    
+    @Column(name = "phone_number", length = 20)
+    private String phoneNumber;
+    
+    
+    @Column(name = "profile_picture")
+    private String profilePicture; // URL ou chemin de l'image de profil
+    
+    // Rôle de l'utilisateur
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role = Role.USER;
+    
+    
+    @Column(name = "email_verification_token")
+    private String emailVerificationToken;
+    
+    // Réinitialisation du mot de passe
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+    
+    @Column(name = "reset_password_token_expiry")
+    private LocalDateTime resetPasswordTokenExpiry;
+    
+   
+    
+    
 }

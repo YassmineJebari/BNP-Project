@@ -1,4 +1,4 @@
-package com.example.gestion_utilisateur;
+package com.recipes.recipe_backend.gestion_utilisateur;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
