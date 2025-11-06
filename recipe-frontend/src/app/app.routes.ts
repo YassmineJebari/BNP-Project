@@ -14,6 +14,11 @@ export const routes: Routes = [
     loadChildren: () => import('./features/recipes/recipes.routes')
       .then(m => m.RECIPES_ROUTES)
   },
+    {
+    path: 'profile',
+    loadChildren: () => import('./features/auth/auth.routes')
+      .then(m => m.AUTH_ROUTES)
+  },
   
   // Feature Chatbot (lazy loading)
   //{

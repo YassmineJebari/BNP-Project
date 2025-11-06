@@ -11,10 +11,9 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () => import('./pages/sign-up/sign-up')
       .then(m => m.SignUp)
   },
-  // Redirection par défaut dans auth
   { 
     path: '', 
-    redirectTo: 'sign-in',  // ← Chemin relatif (sans "/")
+    redirectTo: 'sign-in',
     pathMatch: 'full' 
   }
 ];
