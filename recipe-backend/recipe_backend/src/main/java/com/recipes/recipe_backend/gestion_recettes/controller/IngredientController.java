@@ -1,47 +1,73 @@
 package com.recipes.recipe_backend.gestion_recettes.controller;
 
-import com.recipes.recipe_backend.gestion_recettes.entity.Ingredient;
+import com.recipes.recipe_backend.dto.IngredientDTO;
 import com.recipes.recipe_backend.gestion_recettes.service.IngredientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/ingredients")
+@CrossOrigin(origins = "http://localhost:4200")
 public class IngredientController {
-
+    
     @Autowired
     private IngredientService ingredientService;
-
-    @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
-        Ingredient createdIngredient = ingredientService.create(ingredient);
-        return ResponseEntity.ok(createdIngredient);
-    }
-
+    
     @GetMapping
-    public ResponseEntity<List<Ingredient>> getAllIngredients() {
-        List<Ingredient> ingredients = ingredientService.findAll();
-        return ResponseEntity.ok(ingredients);
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients() {
+        return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
-
+    
     @GetMapping("/{id}")
-    public ResponseEntity<Ingredient> getIngredientById(@PathVariable int id) {
-        Ingredient ingredient = ingredientService.findById(id);
-        return ResponseEntity.ok(ingredient);
+    public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
+        return ResponseEntity.ok(ingredientService.getIngredientById(id));
     }
-
+    
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<IngredientDTO>> getIngredientsByType(@PathVariable String type) {
+        return ResponseEntity.ok(ingredientService.getIngredientsByType(type));
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<IngredientDTO>> searchIngredients(@RequestParam String name) {
+        return ResponseEntity.ok(ingredientService.searchIngredients(name));
+    }
+    
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createIngredient(@Valid @RequestBody IngredientDTO ingredientDTO) {
+        try {
+            IngredientDTO created = ingredientService.createIngredient(ingredientDTO);
+            return ResponseEntity.ok(created);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable int id, @RequestBody Ingredient ingredient) {
-        Ingredient updatedIngredient = ingredientService.update(id, ingredient);
-        return ResponseEntity.ok(updatedIngredient);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateIngredient(@PathVariable Long id, @Valid @RequestBody IngredientDTO ingredientDTO) {
+        try {
+            IngredientDTO updated = ingredientService.updateIngredient(id, ingredientDTO);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-
+    
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
-        ingredientService.delete(id);
-        return ResponseEntity.noContent().build();
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteIngredient(@PathVariable Long id) {
+        try {
+            ingredientService.deleteIngredient(id);
+            return ResponseEntity.ok("Ingrédient supprimé avec succès");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

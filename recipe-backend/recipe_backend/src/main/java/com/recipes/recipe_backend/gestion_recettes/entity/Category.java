@@ -8,22 +8,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ingredients")
+@Table(name = "categories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ingredient {
+public class Category {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Le nom de l'ingrédient est obligatoire")
+    @NotBlank(message = "Le nom de la catégorie est obligatoire")
     @Size(max = 100, message = "Le nom ne peut pas dépasser 100 caractères")
     @Column(unique = true, nullable = false, length = 100)
     private String name;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ingredient_type", nullable = false, length = 50)
-    private IngredientType ingredientType = IngredientType.AUTRE;
+    @Size(max = 500, message = "La description ne peut pas dépasser 500 caractères")
+    @Column(length = 500)
+    private String description;
 }
