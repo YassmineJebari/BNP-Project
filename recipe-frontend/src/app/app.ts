@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './shared/components/navbar/navbar'; // ton composant
+import { NavbarComponent } from './shared/components/navbar/navbar'; 
 
 @Component({
   selector: 'app-root',
-  standalone: true, // ✅ important si ce composant n’est pas dans un module
-  imports: [RouterOutlet, NavbarComponent], // ✅ ajoute NavbarComponent ici
+  standalone: true, 
+  imports: [RouterOutlet, NavbarComponent], 
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

@@ -1,4 +1,3 @@
-// Interface pour un utilisateur
 export interface User {
   id: number;
   email: string;
@@ -8,13 +7,11 @@ export interface User {
   createdAt: Date;
 }
 
-// Ce qu'on envoie pour se connecter
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-// Ce qu'on envoie pour s'inscrire
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -22,7 +19,6 @@ export interface RegisterRequest {
   lastName: string;
 }
 
-// Ce que le backend renvoie après connexion
 export interface AuthResponse {
   token: string;
   user: User;
