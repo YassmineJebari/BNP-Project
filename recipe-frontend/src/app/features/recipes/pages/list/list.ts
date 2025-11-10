@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RecipeService, Recette } from '../recipe.service';
+import { RecipeService, Recette } from '../../services/recipe.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list',

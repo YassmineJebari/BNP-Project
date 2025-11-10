@@ -1,11 +1,6 @@
 import { Routes } from '@angular/router';
-import { RecipeLayout } from './components/recipe-layout/recipe-layout';
 
 export const RECIPES_ROUTES: Routes = [
-  {
-    path: '',
-    component: RecipeLayout,
-    children: [
       {
         path: '',
         loadComponent: () => import('./pages/list/list')
@@ -27,5 +22,3 @@ export const RECIPES_ROUTES: Routes = [
           .then(m => m.Edit)
       }
     ]
-  }
-];

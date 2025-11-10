@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { RecipeService, Recette, Comment } from '../recipe.service';
+import { RecipeService, Recette, Comment } from '../../services/recipe.service';
 import { interval, Subscription } from 'rxjs';
 
 @Component({
