@@ -13,6 +13,6 @@ body {
 /* Important : Ajouter de l'espace pour la navbar fixe */
 /* Dans styles.css - TEST UNIQUEMENT */
 main {
-  padding-top: 80px;
+  padding-top: 50px;
   min-height: calc(100vh - 80px);
 }
