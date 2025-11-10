@@ -154,4 +154,9 @@ public class RecipeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("API Recipes fonctionne !");
+    }
 }
