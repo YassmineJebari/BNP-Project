@@ -1,4 +1,4 @@
-package com.recipes.recipe_backend.controller;
+package com.recipes.recipe_backend.gestion_recettes.controller;
 
 import com.recipes.recipe_backend.dto.FavoriteDTO;
 import com.recipes.recipe_backend.gestion_recettes.service.FavoriteService;
