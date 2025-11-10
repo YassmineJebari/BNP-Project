@@ -1,18 +1,293 @@
-<h2>Détails de la recette</h2>
+<div class="detail-wrapper" *ngIf="recette">
+  <!-- HEADER ACTIONS -->
+  <div class="detail-header">
+    <button class="btn-back" [routerLink]="['/recipes']">
+      ← Retour
+    </button>
+    <div class="header-actions">
+      <button 
+        class="btn-favorite-detail" 
+        [class.is-favorite]="recette.isFavorite"
+        (click)="toggleFavorite()"
+      >
+        {{ recette.isFavorite ? '❤️' : '🤍' }} 
+        {{ recette.isFavorite ? 'Favori' : 'Ajouter aux favoris' }}
+      </button>
+      <button class="btn-edit-detail" [routerLink]="['/recipes/edit', recette.id]">
+        ✏️ Modifier
+      </button>
+    </div>
+  </div>
 
-<div>
-  <strong>Titre :</strong> {{ recette.titre }}
+  <!-- HERO SECTION avec IMAGE et background VERT -->
+  <div class="recipe-hero-green">
+    <div class="hero-green-pattern"></div>
+    <div class="hero-image-section" *ngIf="recette.imageUrl">
+      <img [src]="recette.imageUrl" [alt]="recette.titre" class="hero-image-blend" />
+    </div>
+    <div class="hero-content-overlay">
+      <div class="hero-icon-big">🍽️</div>
+      <div class="hero-text-white">
+        <h1 class="recipe-main-title-white">{{ recette.titre }}</h1>
+        
+        <!-- RATING STARS dans le hero -->
+        <div class="hero-rating">
+          <span class="stars-big">
+            <span *ngFor="let star of [1,2,3,4,5]" class="star-big" [class.filled]="star <= (recette.rating || 0)">
+              {{ star <= (recette.rating || 0) ? '⭐' : '☆' }}
+            </span>
+          </span>
+          <span class="rating-text-white">({{ recette.rating || 0 | number:'1.1-1' }}) - {{ recette.comments?.length || 0 }} avis</span>
+        </div>
+
+        <div class="recipe-badges-white">
+          <span class="badge-white badge-time">⏱️ {{ recette.preparationTime || 30 }} min</span>
+          <span class="badge-white badge-portions">👥 {{ recette.portions || 4 }} portions</span>
+          <span class="badge-white badge-difficulty">📊 {{ recette.difficulty || 'Facile' }}</span>
+          <span class="badge-white badge-favorite" *ngIf="recette.isFavorite">❤️ Favori</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT GRID -->
+  <div class="detail-grid">
+    <!-- TIMER DE CUISINE -->
+    <div class="detail-section timer-section">
+      <h2 class="section-title">
+        <span class="title-icon">⏱️</span>
+        Timer de Cuisine
+      </h2>
+      <div class="timer-container">
+        <div class="timer-display">
+          <span class="timer-digits">{{ formatTime(timeLeft) }}</span>
+        </div>
+        <div class="timer-controls">
+          <button class="btn-timer" (click)="startTimer()" *ngIf="!timerRunning">
+            ▶️ Démarrer ({{ recette.preparationTime }} min)
+          </button>
+          <button class="btn-timer btn-pause" (click)="pauseTimer()" *ngIf="timerRunning">
+            ⏸️ Pause
+          </button>
+          <button class="btn-timer btn-reset" (click)="resetTimer()">
+            🔄 Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTE DE COURSES -->
+    <div class="detail-section shopping-list-section">
+      <h2 class="section-title">
+        <span class="title-icon">🛒</span>
+        Liste de Courses
+      </h2>
+      <div class="shopping-actions">
+        <button class="btn btn-primary" (click)="generateShoppingList()">
+          📝 Générer la liste
+        </button>
+        <button class="btn btn-secondary" (click)="printShoppingList()" *ngIf="shoppingList.length > 0">
+          🖨️ Imprimer
+        </button>
+      </div>
+      <ul class="shopping-list" *ngIf="shoppingList.length > 0">
+        <li *ngFor="let item of shoppingList; let i = index" class="shopping-item">
+          <input 
+            type="checkbox" 
+            [id]="'item-' + i" 
+            [(ngModel)]="item.checked"
+            class="shopping-checkbox"
+          />
+          <label [for]="'item-' + i" [class.checked]="item.checked">
+            {{ item.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- VIDEO SECTION -->
+    <div class="detail-section video-section" *ngIf="recette.videoUrl">
+      <h2 class="section-title">
+        <span class="title-icon">🎥</span>
+        Tutoriel Vidéo
+      </h2>
+      <div class="video-container">
+        <iframe
+          [src]="getSafeVideoUrl(recette.videoUrl)"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="detail-section">
+      <h2 class="section-title">
+        <span class="title-icon">📝</span>
+        Description
+      </h2>
+      <div class="description-card">
+        <p class="description-text">{{ recette.description }}</p>
+      </div>
+    </div>
+
+    <!-- INGREDIENTS -->
+    <div class="detail-section">
+      <h2 class="section-title">
+        <span class="title-icon">🛒</span>
+        Ingrédients
+        <span class="ingredients-count">({{ recette.ingredients.length }})</span>
+      </h2>
+      <ul class="ingredients-grid">
+        <li *ngFor="let ingredient of recette.ingredients" class="ingredient-item-detail">
+          <span class="ingredient-check">✓</span>
+          <span class="ingredient-text">{{ ingredient }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- PREPARATION STEPS -->
+    <div class="detail-section">
+      <h2 class="section-title">
+        <span class="title-icon">👨‍🍳</span>
+        Étapes de Préparation
+      </h2>
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-number-wrapper">
+            <span class="step-number">1</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">Préparation des ingrédients</h3>
+            <p class="step-text">Rassemblez et préparez tous les ingrédients nécessaires. Lavez et coupez les légumes si besoin.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number-wrapper">
+            <span class="step-number">2</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">Cuisson</h3>
+            <p class="step-text">Suivez les instructions de cuisson en respectant les temps et températures indiqués dans la vidéo.</p>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number-wrapper">
+            <span class="step-number">3</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">Dressage et service</h3>
+            <p class="step-text">Dressez votre plat avec soin et servez chaud. Bon appétit !</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENTS SECTION -->
+    <div class="detail-section comments-section">
+      <h2 class="section-title">
+        <span class="title-icon">💬</span>
+        Commentaires & Avis
+        <span class="comments-count">({{ recette.comments?.length || 0 }})</span>
+      </h2>
+
+      <!-- ADD COMMENT FORM -->
+      <div class="add-comment-form">
+        <h3 class="form-subtitle">Laissez votre avis</h3>
+        <div class="rating-input">
+          <span>Votre note :</span>
+          <span class="stars-input">
+            <span 
+              *ngFor="let star of [1,2,3,4,5]" 
+              class="star-input" 
+              [class.selected]="star <= newComment.rating"
+              (click)="setRating(star)"
+            >
+              {{ star <= newComment.rating ? '⭐' : '☆' }}
+            </span>
+          </span>
+        </div>
+        <input
+          type="text"
+          class="form-input"
+          [(ngModel)]="newComment.author"
+          placeholder="Votre nom"
+        />
+        <textarea
+          class="form-textarea"
+          [(ngModel)]="newComment.text"
+          placeholder="Votre commentaire..."
+          rows="3"
+        ></textarea>
+        <button class="btn btn-primary" (click)="addComment()" [disabled]="!newComment.author || !newComment.text || newComment.rating === 0">
+          💬 Publier mon avis
+        </button>
+      </div>
+
+      <!-- COMMENTS LIST -->
+      <div class="comments-list" *ngIf="recette.comments && recette.comments.length > 0">
+        <div class="comment-card" *ngFor="let comment of recette.comments">
+          <div class="comment-header">
+            <div class="comment-avatar">{{ comment.author.charAt(0).toUpperCase() }}</div>
+            <div class="comment-meta">
+              <strong class="comment-author">{{ comment.author }}</strong>
+              <div class="comment-rating">
+                <span *ngFor="let star of [1,2,3,4,5]" class="star-small">
+                  {{ star <= comment.rating ? '⭐' : '☆' }}
+                </span>
+              </div>
+              <span class="comment-date">{{ formatDate(comment.date) }}</span>
+            </div>
+          </div>
+          <p class="comment-text">{{ comment.text }}</p>
+        </div>
+      </div>
+
+      <p class="no-comments" *ngIf="!recette.comments || recette.comments.length === 0">
+        Aucun commentaire pour le moment. Soyez le premier à donner votre avis !
+      </p>
+    </div>
+  </div>
+
+  <!-- FOOTER ACTIONS -->
+  <div class="detail-footer">
+    <button class="btn btn-secondary" [routerLink]="['/recipes']">
+      ← Retour à la liste
+    </button>
+    <button class="btn btn-primary" [routerLink]="['/recipes/edit', recette.id]">
+      ✏️ Modifier cette recette
+    </button>
+    <button class="btn btn-danger" (click)="confirmDelete()">
+      🗑️ Supprimer
+    </button>
+  </div>
 </div>
 
-<div>
-  <strong>Description :</strong> {{ recette.description }}
+<!-- LOADING STATE -->
+<div class="loading-container" *ngIf="!recette">
+  <div class="spinner"></div>
+  <p class="loading-text">Chargement de la recette...</p>
 </div>
 
-<div>
-  <strong>Ingrédients :</strong>
-  <ul>
-    <li *ngFor="let ing of recette.ingredients">{{ ing }}</li>
-  </ul>
+<!-- MODAL DELETE -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-icon">⚠️</div>
+    <h2 class="modal-title">Supprimer cette recette ?</h2>
+    <p class="modal-text">
+      Êtes-vous sûr de vouloir supprimer "<strong>{{ recette?.titre }}</strong>" ?
+      <br>Cette action est irréversible.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="cancelDelete()">
+        Annuler
+      </button>
+      <button class="btn btn-danger" (click)="deleteRecipe()">
+        🗑️ Supprimer définitivement
+      </button>
+    </div>
+  </div>
 </div>
-
-<button [routerLink]="['/recipes']">Retour à la liste</button>

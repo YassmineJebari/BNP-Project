@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NgFor],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
@@ -20,4 +20,7 @@ export class App {
     { title: 'Angular Language Service', link: 'https://angular.dev/tools/language-service' },
     { title: 'Angular DevTools', link: 'https://angular.dev/tools/devtools' },
   ];
+}
+export class AppComponent {
+  title = 'recipe-frontend';
 }

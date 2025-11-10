@@ -12,7 +12,17 @@ import { RecipeService, Recette } from '../recipe.service';
   styleUrls: ['./add.css']
 })
 export class Add {
-  recette: Recette = { titre: '', description: '', ingredients: [] };
+  recette: Recette = { 
+    titre: '', 
+    description: '', 
+    ingredients: [],
+    imageUrl: '',
+    videoUrl: '',
+    category: '',
+    preparationTime: 30,
+    portions: 4,
+    difficulty: 'Facile'
+  };
   ingredientInput: string = '';
 
   constructor(private recipeService: RecipeService, private router: Router) {}
@@ -25,9 +35,13 @@ export class Add {
     }
   }
 
+  removeIngredient(index: number) {
+    this.recette.ingredients.splice(index, 1);
+  }
+
   save() {
     this.recipeService.create(this.recette).subscribe(() => {
-      this.router.navigate(['/recipes']); // redirige vers la liste après l'ajout
+      this.router.navigate(['/recipes']);
     });
   }
 }
