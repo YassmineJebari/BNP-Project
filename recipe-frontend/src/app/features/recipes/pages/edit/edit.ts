@@ -12,7 +12,17 @@ import { RecipeService, Recette } from '../../services/recipe.service';
   styleUrls: ['./edit.css']
 })
 export class Edit implements OnInit {
-  recette: Recette = { titre: '', description: '', ingredients: [] };
+  recette: Recette = { 
+    titre: '', 
+    description: '', 
+    ingredients: [],
+    imageUrl: '',
+    videoUrl: '',
+    category: '',
+    preparationTime: 30,
+    portions: 4,
+    difficulty: 'Facile'
+  };
   ingredientInput: string = '';
   id!: number;
 
@@ -25,7 +35,7 @@ export class Edit implements OnInit {
   ngOnInit() {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.recipeService.getById(this.id).subscribe(r => {
-      if (r) this.recette = { ...r }; // copie pour ne pas modifier l'original avant sauvegarde
+      if (r) this.recette = { ...r };
     });
   }
 
@@ -37,9 +47,13 @@ export class Edit implements OnInit {
     }
   }
 
+  removeIngredient(index: number) {
+    this.recette.ingredients.splice(index, 1);
+  }
+
   save() {
     this.recipeService.update(this.id, this.recette).subscribe(() => {
-      this.router.navigate(['/recipes']); // retour à la liste après modification
+      this.router.navigate(['/recipes']);
     });
   }
 }
