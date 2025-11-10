@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
+import { provideHttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-sign-in',
   standalone: true,
@@ -16,9 +16,9 @@ export class SignIn {
   loading = false;
   errorMessage = '';
   constructor(
-    private fb: FormBuilder,           // Pour créer le formulaire
-    private authService: AuthService,  // Pour appeler le backend
-    private router: Router             // Pour rediriger après connexion
+    private fb: FormBuilder,           
+    private authService: AuthService,  
+    private router: Router             
   ) {
 
     this.loginForm = this.fb.group({

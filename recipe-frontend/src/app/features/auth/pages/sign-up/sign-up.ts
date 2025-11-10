@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
+import { provideHttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-sign-up',
   standalone : true,
@@ -29,7 +29,7 @@ export class SignUp {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, {
-      validators: this.passwordMatchValidator // Validation personnalisée
+      validators: this.passwordMatchValidator 
     });
   }
 
