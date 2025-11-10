@@ -41,7 +41,7 @@
 
 .search-input:focus {
   border-color: #206a5d;
-  box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.2);
+  box-shadow: 0 0 0 2px rgba(32, 106, 93, 0.2);
 }
 
 .search-icon {
@@ -57,22 +57,26 @@
 .navbar-right {
   list-style: none;
   display: flex;
+  align-items: center;
   margin: 0;
   padding: 0;
   flex-shrink: 0; 
+  gap: 8px;
 }
 
 .navbar-right a {
   text-decoration: none;
   color: #444;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: all 0.2s;
   white-space: nowrap;
-  padding: 14px 16px;
+  padding: 10px 16px;
+  border-radius: 6px;
 }
 
 .navbar-right a:hover {
   color: #206a5d;
+  background-color: rgba(32, 106, 93, 0.05);
 }
 
 .navbar-right a.active {
@@ -81,19 +85,92 @@
   background-color: #206a5d;
 }
 
+.signup-btn {
+  background-color: #206a5d !important;
+  color: #ffffff !important;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.signup-btn:hover {
+  background-color: #1a5649 !important;
+  color: #ffffff !important;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #206a5d;
+  font-weight: 600;
+  padding: 8px 16px;
+  background-color: rgba(32, 106, 93, 0.1);
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.user-icon {
+  font-size: 22px;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
 @media (max-width: 900px) {
   .navbar {
     flex-wrap: wrap;
     justify-content: center;
+    padding: 8px 20px;
   }
 
   .navbar-center {
     order: 3;
     width: 100%;
     margin: 0.5rem 0;
+    max-width: none;
   }
 
   .navbar-right {
     order: 2;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .navbar-right a,
+  .logout-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .user-name {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .user-icon {
+    font-size: 18px;
   }
 }
