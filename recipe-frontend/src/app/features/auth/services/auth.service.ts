@@ -9,7 +9,7 @@ import { LoginRequest, RegisterRequest, AuthResponse, User } from '../models/use
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = 'http://localhost:8080/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -77,6 +77,6 @@ export class AuthService {
     localStorage.removeItem('authToken');
     this.currentUserSubject.next(null);
     console.log('🚪 Déconnexion : token supprimé');
-    this.router.navigate(['/auth/sign-in']);  // ✅ Corrigé le path
+    this.router.navigate(['/auth/sign-in']);  // 
   }
 }

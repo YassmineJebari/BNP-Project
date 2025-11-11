@@ -77,11 +77,11 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
         // Authentifier l'utilisateur
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
         
         // Charger l'utilisateur
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findByUsername(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         
         
