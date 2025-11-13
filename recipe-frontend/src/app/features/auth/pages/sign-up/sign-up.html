@@ -21,7 +21,22 @@
         {{ errorMessage }}
       </div>
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        
+
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur</label>
+          <input 
+            id="username"
+            type="text" 
+            formControlName="username" 
+            placeholder="jeandupont"
+            [class.invalid]="username?.invalid && username?.touched"
+          />
+          <div *ngIf="username?.invalid && username?.touched" class="error">
+            <small *ngIf="username?.errors?.['required']">Le nom d'utilisateur est requis</small>
+            <small *ngIf="username?.errors?.['minlength']">Minimum 3 caractères</small>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="firstName">Prénom</label>
           <input 

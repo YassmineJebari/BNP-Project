@@ -40,7 +40,12 @@ export class SignIn {
       next: (response) => {
         console.log('Connexion réussie', response);
         this.loading = false;
-        this.router.navigate(['/profile']);
+        if (response?.token) {
+          localStorage.setItem('token', response.token);
+        }
+        setTimeout(() => {
+          this.router.navigate(['/recipes']);
+        }, 500);
       },
       error: (error) => {
         this.loading = false;

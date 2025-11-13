@@ -62,7 +62,7 @@ public class AuthService {
         userRepository.save(user);
         
         // Générer le token
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
         
         return new AuthResponse(
@@ -81,13 +81,13 @@ public class AuthService {
         );
         
         // Charger l'utilisateur
-        User user = userRepository.findByUsername(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         
         
         
         // Générer le token
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
         
         return new AuthResponse(

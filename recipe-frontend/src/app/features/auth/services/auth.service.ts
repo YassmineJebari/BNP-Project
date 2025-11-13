@@ -1,82 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { LoginRequest, RegisterRequest, AuthResponse, User } from '../models/user.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  private baseUrl = 'http://localhost:8080/api/auth'; // URL backend
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {
-    // Commenté pour éviter les erreurs au démarrage
-    // this.checkCurrentUser();
+  constructor(private http: HttpClient) {}
+
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, data);
   }
 
-  private checkCurrentUser(): void {
-    const token = this.getToken();
-    if (token) {
-      this.getProfile().subscribe({
-        next: (user) => this.currentUserSubject.next(user),
-        error: () => {
-          this.logout();
-        }
-      });
-    }
-  }
-
-  login(credentials: LoginRequest): Observable<AuthResponse> {
-    // ✅ CORRIGÉ : Parenthèses au lieu de backticks
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials)
-      .pipe(
-        tap(response => {
-          this.saveToken(response.token);
-          this.currentUserSubject.next(response.user);
-          console.log('✅ Connexion réussie, token sauvegardé');
-        })
-      );
-  }
-
-  register(data: RegisterRequest): Observable<User> {
-    // ✅ CORRIGÉ : Parenthèses au lieu de backticks
-    return this.http.post<User>(`${this.apiUrl}/register`, data);
-  }
-
-  getProfile(): Observable<User> {
-    // ✅ CORRIGÉ : Parenthèses au lieu de backticks
-    return this.http.get<User>(`${this.apiUrl}/profile`, {
-      headers: { Authorization: `Bearer ${this.getToken()}` }
-    });
-  }
-
-  saveToken(token: string): void {
-    localStorage.setItem('authToken', token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
-
-  logout(): void {
-    localStorage.removeItem('authToken');
-    this.currentUserSubject.next(null);
-    console.log('🚪 Déconnexion : token supprimé');
-    this.router.navigate(['/auth/sign-in']);  // 
+  login(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, data);
   }
 }

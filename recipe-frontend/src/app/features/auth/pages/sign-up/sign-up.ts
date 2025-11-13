@@ -23,6 +23,7 @@ export class SignUp {
     private router: Router
   ) {
     this.registerForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -54,9 +55,7 @@ export class SignUp {
     this.errorMessage = '';
     this.successMessage = '';
 
-    const { confirmPassword, ...userData } = this.registerForm.value;
-
-    this.authService.register(userData).subscribe({
+    this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         console.log('✅ Inscription réussie', response);
         this.loading = false;
@@ -72,6 +71,10 @@ export class SignUp {
         console.error('❌ Erreur d\'inscription', error);
       }
     });
+  }
+
+  get username() {
+    return this.registerForm.get('username');
   }
 
   get firstName() {
