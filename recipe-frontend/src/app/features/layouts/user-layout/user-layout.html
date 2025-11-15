@@ -1,48 +1,89 @@
-<div class="page-wrapper">
-  <!-- HERO avec recherche et filtres -->
-  <div class="page-hero">
-    <div class="hero-decoration">
-      <p class="page-subtitle">Découvrez et savourez vos meilleures créations culinaires</p>
+<div class="main-layout">
+    <div class="profile-header-bar">
+            <h1 class="page-title">Profil</h1>
+            <p class="page-subtitle">Consultez tous les détails de votre profil ici</p>
     </div>
-    <!-- BARRE DE RECHERCHE -->
-    <div class="search-filter-container">
-      <div class="search-bar">
-        <input type="text" placeholder="Rechercher une recette.." class="search-input" [(ngModel)]="searchTerm" (input)="filterRecipes()">
-        <i class="material-icons search-icon">search</i>
-      </div>
-      
-      <!-- FILTRES -->
+    <div class="structure">
+    <div class="app-sidebar">
+                <div class="profile-sidebar">
+                    <div class="user-card">
+                        <div class="user-avatar-container">
+                            <div class="user-avatar">
+                                {{ getUserInitials() }}
+                            </div>
+                            <h2 class="user-name">{{ getUserFullName() }}</h2>
+                            <div *ngIf="isLoading" class="loader-container">
+                                <div class="loader"></div>
+                            </div>
+                            <div class="about">
+                                <label>A propos de moi</label>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae dicta provident,
+                                    quas quod iure cumque facere aliquid non sit quo ipsa nisi sapiente nesciunt eum, neque
+                                    deserunt et, quidem consequatur.
+                                </p>
+                            </div>
+                            <div *ngIf="!isLoading" class="details-card">
+                                <div class="details-header">
+                                    <div class="informations">
+                                        <label class="details-title">Bio & autres détails</label>
+                                        <button class="btn-edit" (click)="toggleEdit()">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="details-grid">
+                                        <div class="detail-row">
+                                            <div class="detail-item">
+                                                <label class="detail-label">Mon Plat Favoris</label>
+                                                <p class="detail-value">{{ recette.isFavorite || 'Cordon bleu' }}</p>
+                                            </div>
+                                            <div class="detail-item">
+                                                <label class="detail-label">Categorie Favori</label>
+                                                <p class="detail-value">{{ recette.category || 'Cuisine française' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="detail-full">
+                                            <label class="details-title">Tags</label>
+                                            <div class="tags">
+                                                <span class="tag">#Végétarien</span>
+                                                <span class="tag">#SanGluten</span>
+                                                <span class="tag">#CuisineFrançaise</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+    <div class="main-content">
       <div class="filters">
-        <!-- ❤️ Favoris visible si connecté -->
         <button 
           class="filter-btn"
           [class.active]="showFavoritesOnly"
           (click)="toggleFavorites()"
-          *ngIf="isLoggedIn()"
         >
-          ❤️ Favoris
+          Favoris
         </button>
-        
-        <select class="filter-select" [(ngModel)]="selectedCategory" (change)="filterRecipes()">
+        <select class="filter-select">
           <option value="">Toutes catégories</option>
-          <option value="Entrée">🥗 Entrées</option>
-          <option value="Plat">🍝 Plats</option>
-          <option value="Dessert">🍰 Desserts</option>
+          <option value="Entrée">Entrées</option>
+          <option value="Plat">Plats</option>
+          <option value="Dessert">Desserts</option>
         </select>
-
-        <select class="filter-select" [(ngModel)]="sortBy" (change)="sortRecipes()">
+        <select class="filter-select">
           <option value="">Trier par...</option>
-          <option value="recent">📅 Plus récentes</option>
-          <option value="rating">⭐ Mieux notées</option>
-          <option value="name">🔤 Nom (A-Z)</option>
-          <option value="time">⏱️ Temps de préparation</option>
+          <option value="recent">Plus récentes</option>
+          <option value="rating">Mieux notées</option>
+          <option value="name">Nom (A-Z)</option>
+          <option value="time">Temps de préparation</option>
         </select>
       </div>
-    </div>
-  </div>
 
-
-  <!-- LISTE DES RECETTES -->
         <div class="recipes-grid" *ngIf="filteredRecettes.length > 0; else noRecipes">
             <div class="recipe-card" *ngFor="let recette of filteredRecettes">
             <!-- IMAGE DE LA RECETTE -->
@@ -146,5 +187,7 @@
             </button>
             </div>
         </ng-template>
+        </div>
+    </div>
+</div>
 
-<app-footer></app-footer>

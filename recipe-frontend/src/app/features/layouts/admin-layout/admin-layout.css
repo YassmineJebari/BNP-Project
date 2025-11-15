@@ -1,0 +1,44 @@
+.filters{
+  display: flex;
+  gap: 2rem;
+  margin-top: 50px;
+}
+.profile-header-bar { 
+    background: linear-gradient(135deg, #206a5d 0%, #0FAC71 100%);
+    padding: 50px;
+    color: white;
+}
+.page-title {
+  font-size: 2.5rem; 
+  font-weight: 700; 
+  margin: 0 0 1rem 0; 
+}
+.page-subtitle { 
+    font-size: 1rem; 
+    margin: 0; 
+}
+
+.filters{
+  display: flex;
+  gap: 1rem;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.filter-select{
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #0FAC71 ;
+}
+.filters button{
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 10px;
+  border: 1px solid #0FAC71 ;
+  background: white;
+}
+p{
+  margin-top: 500px;
+}

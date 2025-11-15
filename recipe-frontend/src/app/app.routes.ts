@@ -18,10 +18,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/recipes/recipes.routes')
       .then(m => m.RECIPES_ROUTES)
   },
-    {
-    path: 'profile',
-    loadChildren: () => import('./features/auth/auth.routes')
-      .then(m => m.AUTH_ROUTES)
+  {
+    path: 'layouts',
+    loadChildren: () => import('./features/layouts/layouts.routes')
+      .then(m => m.LAYOUT_ROUTES)
   },
   
   /*{

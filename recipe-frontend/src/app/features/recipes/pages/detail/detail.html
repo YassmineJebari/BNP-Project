@@ -1,23 +1,4 @@
 <div class="detail-wrapper" *ngIf="recette">
-  <!-- HEADER ACTIONS -->
-  <div class="detail-header">
-    <button class="btn-back" [routerLink]="['/recipes']">
-      ← Retour
-    </button>
-    <div class="header-actions">
-      <button 
-        class="btn-favorite-detail" 
-        [class.is-favorite]="recette.isFavorite"
-        (click)="toggleFavorite()"
-      >
-        {{ recette.isFavorite ? '❤️' : '🤍' }} 
-        {{ recette.isFavorite ? 'Favori' : 'Ajouter aux favoris' }}
-      </button>
-      <button class="btn-edit-detail" [routerLink]="['/recipes/edit', recette.id]">
-        ✏️ Modifier
-      </button>
-    </div>
-  </div>
 
   <!-- HERO SECTION avec IMAGE et background VERT -->
   <div class="recipe-hero-green">
@@ -44,7 +25,13 @@
           <span class="badge-white badge-time">⏱️ {{ recette.preparationTime || 30 }} min</span>
           <span class="badge-white badge-portions">👥 {{ recette.portions || 4 }} portions</span>
           <span class="badge-white badge-difficulty">📊 {{ recette.difficulty || 'Facile' }}</span>
-          <span class="badge-white badge-favorite" *ngIf="recette.isFavorite">❤️ Favori</span>
+          <button 
+            class="btn-favorite-detail" 
+            [class.is-favorite]="recette.isFavorite"
+            (click)="toggleFavorite()"
+            >
+            {{ recette.isFavorite ? '❤️' : '🤍' }} 
+          </button>
         </div>
       </div>
     </div>
@@ -56,7 +43,7 @@
     <div class="detail-section timer-section">
       <h2 class="section-title">
         <span class="title-icon">⏱️</span>
-        Timer de Cuisine
+        Temps de preparation
       </h2>
       <div class="timer-container">
         <div class="timer-display">
@@ -64,13 +51,13 @@
         </div>
         <div class="timer-controls">
           <button class="btn-timer" (click)="startTimer()" *ngIf="!timerRunning">
-            ▶️ Démarrer ({{ recette.preparationTime }} min)
+            ▶  Démarrer 
           </button>
           <button class="btn-timer btn-pause" (click)="pauseTimer()" *ngIf="timerRunning">
-            ⏸️ Pause
+            ⏸  Pause
           </button>
           <button class="btn-timer btn-reset" (click)="resetTimer()">
-            🔄 Réinitialiser
+            Réinitialiser
           </button>
         </div>
       </div>
@@ -80,7 +67,7 @@
     <div class="detail-section shopping-list-section">
       <h2 class="section-title">
         <span class="title-icon">🛒</span>
-        Liste de Courses
+        Ingredients
       </h2>
       <div class="shopping-actions">
         <button class="btn btn-primary" (click)="generateShoppingList()">
@@ -132,22 +119,6 @@
       </div>
     </div>
 
-    <!-- INGREDIENTS -->
-    <div class="detail-section">
-      <h2 class="section-title">
-        <span class="title-icon">🛒</span>
-        Ingrédients
-        <span class="ingredients-count">({{ recette.ingredients.length }})</span>
-      </h2>
-      <ul class="ingredients-grid">
-        <li *ngFor="let ingredient of recette.ingredients" class="ingredient-item-detail">
-          <span class="ingredient-check">✓</span>
-          <span class="ingredient-text">{{ ingredient }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- PREPARATION STEPS -->
     <div class="detail-section">
       <h2 class="section-title">
         <span class="title-icon">👨‍🍳</span>
@@ -210,21 +181,23 @@
             </span>
           </span>
         </div>
-        <input
-          type="text"
-          class="form-input"
-          [(ngModel)]="newComment.author"
-          placeholder="Votre nom"
-        />
-        <textarea
-          class="form-textarea"
-          [(ngModel)]="newComment.text"
-          placeholder="Votre commentaire..."
-          rows="3"
-        ></textarea>
-        <button class="btn btn-primary" (click)="addComment()" [disabled]="!newComment.author || !newComment.text || newComment.rating === 0">
-          💬 Publier mon avis
-        </button>
+        <div class="comment-form">
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="newComment.author"
+            placeholder="Votre nom"
+          />
+          <textarea
+            class="form-textarea"
+            [(ngModel)]="newComment.text"
+            placeholder="Votre commentaire..."
+            rows="3"
+          ></textarea>
+          <button class="btn btn-primary" (click)="addComment()" [disabled]="!newComment.author || !newComment.text || newComment.rating === 0">
+            💬 Publier mon avis
+          </button>
+        </div>
       </div>
 
       <!-- COMMENTS LIST -->
@@ -251,19 +224,6 @@
       </p>
     </div>
   </div>
-
-  <!-- FOOTER ACTIONS -->
-  <div class="detail-footer">
-    <button class="btn btn-secondary" [routerLink]="['/recipes']">
-      ← Retour à la liste
-    </button>
-    <button class="btn btn-primary" [routerLink]="['/recipes/edit', recette.id]">
-      ✏️ Modifier cette recette
-    </button>
-    <button class="btn btn-danger" (click)="confirmDelete()">
-      🗑️ Supprimer
-    </button>
-  </div>
 </div>
 
 <!-- LOADING STATE -->
@@ -272,22 +232,4 @@
   <p class="loading-text">Chargement de la recette...</p>
 </div>
 
-<!-- MODAL DELETE -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cancelDelete()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-icon">⚠️</div>
-    <h2 class="modal-title">Supprimer cette recette ?</h2>
-    <p class="modal-text">
-      Êtes-vous sûr de vouloir supprimer "<strong>{{ recette?.titre }}</strong>" ?
-      <br>Cette action est irréversible.
-    </p>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" (click)="cancelDelete()">
-        Annuler
-      </button>
-      <button class="btn btn-danger" (click)="deleteRecipe()">
-        🗑️ Supprimer définitivement
-      </button>
-    </div>
-  </div>
-</div>
+<app-footer></app-footer>

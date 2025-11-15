@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RecipeService, Recette, Comment } from '../../services/recipe.service';
 import { interval, Subscription } from 'rxjs';
+import { FooterComponent } from '../../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent],
   templateUrl: './detail.html',
   styleUrls: ['./detail.css']
 })

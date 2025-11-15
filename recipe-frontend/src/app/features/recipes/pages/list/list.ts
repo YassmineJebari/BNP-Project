@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import{AuthService} from '../../../auth/services/auth.service';
 import { RecipeService, Recette } from '../../services/recipe.service';
 import { Observable } from 'rxjs';
+import { FooterComponent } from '../../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent],
   templateUrl: './list.html',
   styleUrls: ['./list.css']
 })
@@ -23,11 +25,19 @@ export class List implements OnInit {
   showFavoritesOnly: boolean = false;
   sortBy: string = '';
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(
+    private recipeService: RecipeService,
+    private authService: AuthService
+  
+  ) {}
 
   ngOnInit() {
     this.loadRecipes();
+    console.log('🔍 User actuel dans list:', this.authService.getCurrentUser());
+    console.log('👑 isAdmin dans list:', this.isAdmin());
+    console.log('🔗 isLoggedIn dans list:', this.isLoggedIn());
   }
+  
 
   loadRecipes() {
     this.recipeService.getAll().subscribe(data => {
@@ -77,6 +87,17 @@ export class List implements OnInit {
   toggleFavorites() {
     this.showFavoritesOnly = !this.showFavoritesOnly;
     this.filterRecipes();
+  }
+  isLoggedIn(): boolean {
+    const result = this.authService.isLoggedIn();
+    console.log('✅ isLoggedIn():', result);
+    return result;
+  }
+    isAdmin(): boolean {
+    const user = this.authService.getCurrentUser();
+    const result = user?.role === 'ADMIN';
+    console.log('✅ isAdmin():', result, 'User:', user);
+    return result;
   }
 
   // Clear search
