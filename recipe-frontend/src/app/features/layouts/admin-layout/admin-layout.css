@@ -18,6 +18,34 @@
     margin: 0; 
 }
 
+.btn-recettes.active,
+.btn-utilisateurs.active {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+.btn-recettes,
+.btn-utilisateurs {
+  background: white;
+}
+.btn-recettes:hover,
+.btn-utilisateurs:hover {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+.btn-recettes.active:hover,
+.btn-utilisateurs.active:hover {
+  background-color: white;
+  color: black;
+  font-weight: lighter;
+}
+
+.recettes-section,
+.utilisateurs-section {
+  padding-left: 50px;
+}
+
 .filters{
   display: flex;
   gap: 1rem;
@@ -37,7 +65,6 @@
   padding-right: 15px;
   border-radius: 10px;
   border: 1px solid #0FAC71 ;
-  background: white;
 }
 p{
   margin-top: 500px;

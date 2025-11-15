@@ -1,26 +1,57 @@
 <div class="main-layout">
-  <div class="head-img">
-  </div>
+  <div class="head-img"></div>
+  
   <div class="profile-header-bar">
     <h1 class="page-title">Profil</h1>
     <p class="page-subtitle">Consultez tous les détails de votre profil ici</p>
   </div>
-    <div class="main-content">
-      <div class="filters">
-        <button>Utilisateurs</button>
-        <button>recette</button>
-        <select class="filter-select">
-          <option value="">Toutes catégories</option>
-          <option value="Entrée">Entrées</option>
-          <option value="Plat">Plats</option>
-          <option value="Dessert">Desserts</option>
-        </select>
-        <select class="filter-select">
-          <option value="">Trier par...</option>
-          <option value="recent">Plus récentes</option>
-          <option value="rating">Mieux notées</option>
-          <option value="name">Nom (A-Z)</option>
-          <option value="time">Temps de préparation</option>
-        </select>
+  
+  <div class="main-content">
+    <div class="filters">
+      <button 
+        class="btn-recettes"
+        [class.active]="activeTab === 'recettes'"
+        (click)="toggleRecette()"
+      >
+        Recettes ({{ totalRecipes }})
+      </button>
+      
+      <button 
+        class="btn-utilisateurs"
+        [class.active]="activeTab === 'utilisateurs'"
+        (click)="toggleUtilisateurs()"
+      >
+        Utilisateurs ({{ totalUsers }})
+      </button>
+      
+      <!-- Filtres SANS *ngIf - toujours visibles -->
+      <select class="filter-select">
+        <option value="">Toutes catégories</option>
+        <option value="Entrée">Entrées</option>
+        <option value="Plat">Plats</option>
+        <option value="Dessert">Desserts</option>
+      </select>
+      
+      <select class="filter-select">
+        <option value="">Trier par...</option>
+        <option value="recent">Plus récentes</option>
+        <option value="rating">Mieux notées</option>
+        <option value="name">Nom (A-Z)</option>
+        <option value="time">Temps de préparation</option>
+      </select>
     </div>
+
+    <!-- Section Recettes -->
+    <div *ngIf="activeTab === 'recettes'" class="recettes-section">
+      <p>Total : {{ totalRecipes }} recettes</p>
+      <!-- Liste des recettes ici -->
+
+    </div>
+
+    <!-- Section Utilisateurs -->
+    <div *ngIf="activeTab === 'utilisateurs'" class="utilisateurs-section">
+      <p>Total : {{ totalUsers }} utilisateurs</p>
+      <!-- Liste des utilisateurs ici -->
+    </div>
+  </div>
 </div>
