@@ -10,16 +10,10 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     private String token;
     private String type = "Bearer";
-    private Long id;
-    private String username;
-    private String email;
-    private String role;
-    
-    public AuthResponse(String token, Long id, String username, String email, String role) {
+    private UserDTO user;   // <-- on renvoie un UserDTO complet
+
+    public AuthResponse(String token, UserDTO user) {
         this.token = token;
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.role = role;
+        this.user = user;
     }
 }

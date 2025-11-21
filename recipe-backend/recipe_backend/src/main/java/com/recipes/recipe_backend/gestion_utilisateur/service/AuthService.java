@@ -3,6 +3,7 @@ package com.recipes.recipe_backend.gestion_utilisateur.service;
 import com.recipes.recipe_backend.dto.AuthResponse;
 import com.recipes.recipe_backend.dto.LoginRequest;
 import com.recipes.recipe_backend.dto.RegisterRequest;
+import com.recipes.recipe_backend.dto.UserDTO;
 import com.recipes.recipe_backend.gestion_utilisateur.entity.Role;
 import com.recipes.recipe_backend.gestion_utilisateur.entity.User;
 import com.recipes.recipe_backend.gestion_utilisateur.repository.UserRepository;
@@ -32,6 +33,9 @@ public class AuthService {
     
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserService userService;
     
     public AuthResponse register(RegisterRequest request) {
         // Vérifier si l'utilisateur existe déjà
@@ -65,13 +69,9 @@ public class AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
         
-        return new AuthResponse(
-            token, 
-            user.getId(), 
-            user.getUsername(), 
-            user.getEmail(), 
-            user.getRole().name()
-        );
+        UserDTO userDTO = userService.getUserById(user.getId());
+
+        return new AuthResponse(token, userDTO);
     }
     
     public AuthResponse login(LoginRequest request) {
@@ -90,12 +90,8 @@ public class AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
         
-        return new AuthResponse(
-            token, 
-            user.getId(), 
-            user.getUsername(), 
-            user.getEmail(), 
-            user.getRole().name()
-        );
+        UserDTO userDTO = userService.getUserById(user.getId());
+
+        return new AuthResponse(token, userDTO);
     }
 }

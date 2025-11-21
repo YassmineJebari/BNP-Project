@@ -42,6 +42,12 @@ public class UserService {
         return convertToDTO(user);
     }
     
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return convertToDTO(user);
+    }
+
     // Mettre à jour le profil
     public UserDTO updateProfile(Long id, UpdateProfileRequest request) {
         User user = userRepository.findById(id)
