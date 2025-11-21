@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { provideHttpClient } from '@angular/common/http';
+import { User } from '../../models/user.model';
+
 @Component({
   selector: 'app-sign-in',
   standalone: true,
@@ -15,21 +16,36 @@ export class SignIn {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
-  constructor(
-    private fb: FormBuilder,           
-    private authService: AuthService,  
-    private router: Router             
-  ) {
 
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
+  // 🔽 nouvelle méthode : choisit le layout en fonction du rôle
+  private redirectAfterLogin(user: User | null | undefined): void {
+    if (!user) {
+      // fallback au cas où, mais normalement on a toujours un user ici
+      this.router.navigate(['/recipes']);
+      return;
+    }
+
+    if (user.role === 'ADMIN') {
+      this.router.navigate(['/layouts/admin-layout']);
+    } else {
+      this.router.navigate(['/layouts/user-layout']);
+    }
+  }
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      this.errorMessage = 'Veuillez remplir correctement les champs.';
       return;
     }
 
@@ -40,16 +56,21 @@ export class SignIn {
       next: (response) => {
         console.log('Connexion réussie', response);
         this.loading = false;
-        if (response?.token) {
-          localStorage.setItem('token', response.token);
-        }
-        setTimeout(() => {
-          this.router.navigate(['/recipes']);
-        }, 500);
+        // Le token + l'user sont déjà gérés dans AuthService
+        this.redirectAfterLogin(response.user);
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.error?.message || 'Email ou mot de passe incorrect';
+        const backendError = error.error;
+
+        if (typeof backendError === 'string') {
+          this.errorMessage = backendError;
+        } else if (backendError?.message) {
+          this.errorMessage = backendError.message;
+        } else {
+          this.errorMessage = 'Email ou mot de passe incorrect';
+        }
+
         console.error('Erreur de connexion', error);
       }
     });

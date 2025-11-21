@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -9,16 +10,19 @@ import { LoginRequest, RegisterRequest, AuthResponse, User } from '../models/use
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = 'http://localhost:8080/api/auth';
+  private usersApiUrl = 'http://localhost:8080/api/users';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    // Commenté pour éviter les erreurs au démarrage
-    // this.checkCurrentUser();
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkCurrentUser();
+    }
   }
 
   private checkCurrentUser(): void {
@@ -39,45 +43,50 @@ export class AuthService {
         tap(response => {
           this.saveToken(response.token);
           this.currentUserSubject.next(response.user);
-          console.log('✅ Connexion réussie, token sauvegardé');
         })
       );
   }
 
-  register(data: RegisterRequest): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, data);
+  register(data: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data)
+      .pipe(
+        tap(response => {
+          this.saveToken(response.token);
+          this.currentUserSubject.next(response.user);
+        })
+      );
   }
 
   getProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/profile`, {
+    return this.http.get<User>(`${this.usersApiUrl}/me`, {
       headers: { Authorization: `Bearer ${this.getToken()}` }
     });
   }
 
   saveToken(token: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem('authToken', token);
   }
 
   getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem('authToken');
   }
 
   isLoggedIn(): boolean {
-    // Vérifier le token OU le currentUser (pour les tests)
-    return !!this.getToken() 
+    return !!this.getToken();
   }
 
   getCurrentUser(): User | null {
-    // 🧪 MODE TEST : Lire depuis localStorage
-    
     return this.currentUserSubject.value;
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+    }
     this.currentUserSubject.next(null);
-    console.log('🚪 Déconnexion : token supprimé');
     this.router.navigate(['/auth/sign-in']);
   }
 

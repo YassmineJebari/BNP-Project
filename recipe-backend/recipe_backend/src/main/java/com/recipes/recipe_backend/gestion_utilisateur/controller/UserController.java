@@ -40,8 +40,8 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        return ResponseEntity.ok(userService.getUserByUsername(username));
+        String email = auth.getName();
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
     
     // Mettre à jour son propre profil

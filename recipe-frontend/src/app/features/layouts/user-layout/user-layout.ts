@@ -19,6 +19,7 @@ export class UserLayoutComponent implements OnInit {
   // ======== UTILISATEUR ========
   user: User = {
     id: 0,
+    username: '',
     firstName: '',
     lastName: '',
     email: '',
