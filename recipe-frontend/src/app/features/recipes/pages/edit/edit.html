@@ -6,41 +6,28 @@
   </div>
 
   <div class="form-card">
-    <!-- Pour edit.html, remplacez juste le titre -->
-<!-- POUR ADD.HTML : -->
-<div class="form-title-section">
-  <div class="form-icon">➕</div>
-  <div>
-    <h1 class="form-title">Nouvelle Recette</h1>
-    <p class="form-subtitle">Ajoutez une délicieuse recette à votre collection</p>
-  </div>
-</div>
-
-<!-- POUR EDIT.HTML : -->
-<!-- Remplacez le bloc form-title-section par : -->
-<!--
-<div class="form-title-section">
-  <div class="form-icon">✏️</div>
-  <div>
-    <h1 class="form-title">Modifier la Recette</h1>
-    <p class="form-subtitle">Mettez à jour les informations de votre recette</p>
-  </div>
-</div>
--->
+    <!-- TITRE DE LA FORMULAIRE -->
+    <div class="form-title-section">
+      <div class="form-icon">✏️</div>
+      <div>
+        <h1 class="form-title">Modifier la Recette</h1>
+        <p class="form-subtitle">Mettez à jour les informations de votre recette</p>
+      </div>
+    </div>
 
     <form class="recipe-form">
       <!-- TITRE -->
       <div class="form-group">
-        <label class="form-label" for="titre">
+        <label class="form-label" for="title">
           <span class="label-icon">📝</span>
           Titre de la recette *
         </label>
         <input
-          id="titre"
+          id="title"
           type="text"
           class="form-input"
-          [(ngModel)]="recette.titre"
-          name="titre"
+          [(ngModel)]="recette.title"
+          name="title"
           placeholder="Ex: Pâtes Carbonara"
           required
         />
@@ -69,11 +56,11 @@
             <span class="label-icon">🏷️</span>
             Catégorie
           </label>
-          <select class="form-input" [(ngModel)]="recette.category" name="category">
-            <option value="">Sélectionner...</option>
-            <option value="Entrée">🥗 Entrée</option>
-            <option value="Plat">🍝 Plat</option>
-            <option value="Dessert">🍰 Dessert</option>
+          <select class="form-input" [(ngModel)]="recette.categoryId" name="categoryId">
+            <option [ngValue]="null">Sélectionner...</option>
+            <option [ngValue]="1">🥗 Entrée</option>
+            <option [ngValue]="2">🍝 Plat</option>
+            <option [ngValue]="3">🍰 Dessert</option>
           </select>
         </div>
 
@@ -99,8 +86,8 @@
           <input
             type="number"
             class="form-input"
-            [(ngModel)]="recette.portions"
-            name="portions"
+            [(ngModel)]="recette.servings"
+            name="servings"
             placeholder="4"
           />
         </div>
@@ -112,9 +99,9 @@
           </label>
           <select class="form-input" [(ngModel)]="recette.difficulty" name="difficulty">
             <option value="">Sélectionner...</option>
-            <option value="Facile">Facile</option>
-            <option value="Moyen">Moyen</option>
-            <option value="Difficile">Difficile</option>
+            <option value="FACILE">Facile</option>
+            <option value="MOYEN">Moyen</option>
+            <option value="DIFFICILE">Difficile</option>
           </select>
         </div>
       </div>
@@ -182,7 +169,7 @@
           <h3 class="preview-title">Ingrédients ajoutés:</h3>
           <ul class="ingredients-list">
             <li *ngFor="let ing of recette.ingredients; let i = index" class="ingredient-tag">
-              <span>{{ ing }}</span>
+              <span>{{ ing.ingredientName || 'Nouvel ingrédient' }}</span>
               <button
                 type="button"
                 class="btn-remove"
@@ -213,7 +200,7 @@
           type="button"
           class="btn btn-primary"
           (click)="save()"
-          [disabled]="!recette.titre"
+          [disabled]="!recette.title"
         >
           ✓ Enregistrer la recette
         </button>

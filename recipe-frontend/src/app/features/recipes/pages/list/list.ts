@@ -1,11 +1,12 @@
+// list.ts
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import{AuthService} from '../../../auth/services/auth.service';
-import { RecipeService, Recette } from '../../services/recipe.service';
-import { Observable } from 'rxjs';
+import { AuthService } from '../../../auth/services/auth.service';
+import { RecipeService } from '../../services/recipe.service';
 import { FooterComponent } from '../../../../shared/components/footer/footer';
+import { RecipeDTO } from '../../models/recipe.models';
 
 @Component({
   selector: 'app-list',
@@ -15,20 +16,22 @@ import { FooterComponent } from '../../../../shared/components/footer/footer';
   styleUrls: ['./list.css']
 })
 export class List implements OnInit {
-  recettes: Recette[] = [];
-  filteredRecettes: Recette[] = [];
-  recetteToDelete?: Recette;
-  
+  recettes: RecipeDTO[] = [];
+  filteredRecettes: RecipeDTO[] = [];
+  recetteToDelete?: RecipeDTO;
+
   // Filtres
   searchTerm: string = '';
   selectedCategory: string = '';
   showFavoritesOnly: boolean = false;
   sortBy: string = '';
 
+  // Liste des catégories uniques (pour filtrage)
+  categories: string[] = [];
+
   constructor(
     private recipeService: RecipeService,
     private authService: AuthService
-  
   ) {}
 
   ngOnInit() {
@@ -37,29 +40,35 @@ export class List implements OnInit {
     console.log('👑 isAdmin dans list:', this.isAdmin());
     console.log('🔗 isLoggedIn dans list:', this.isLoggedIn());
   }
-  
 
+  // Charger toutes les recettes depuis le service
   loadRecipes() {
-    this.recipeService.getAll().subscribe(data => {
+    this.recipeService.getAll().subscribe((data: RecipeDTO[]) => {
       this.recettes = data;
+      // Extraire les catégories uniques pour le filtrage
+      //this.categories = Array.from(new Set(data.map(r => r.categoryName).filter(Boolean)));
+      this.categories = Array.from(new Set(data.map(r => r.categoryName).filter((c): c is string => !!c)));
       this.filterRecipes();
     });
   }
 
   // Filtrer les recettes
   filterRecipes() {
-    this.filteredRecettes = this.recettes.filter(recette => {
-      const matchesSearch = !this.searchTerm || 
-        recette.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    this.filteredRecettes = this.recettes.filter((recette) => {
+      const matchesSearch =
+        !this.searchTerm ||
+        recette.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         recette.description.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
-      const matchesCategory = !this.selectedCategory || 
-        recette.category === this.selectedCategory;
-      
-      const matchesFavorite = !this.showFavoritesOnly || recette.isFavorite;
-      
+
+      const matchesCategory =
+        !this.selectedCategory || recette.categoryName === this.selectedCategory;
+
+      const matchesFavorite =
+        !this.showFavoritesOnly || recette.isFavorite;
+
       return matchesSearch && matchesCategory && matchesFavorite;
     });
+
     this.sortRecipes();
   }
 
@@ -70,11 +79,11 @@ export class List implements OnInit {
     this.filteredRecettes.sort((a, b) => {
       switch (this.sortBy) {
         case 'recent':
-          return (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0);
+          return (new Date(b.createdAt || '').getTime()) - (new Date(a.createdAt || '').getTime());
         case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
+          return (b.favoritesCount || 0) - (a.favoritesCount || 0);
         case 'name':
-          return a.titre.localeCompare(b.titre);
+          return a.title.localeCompare(b.title);
         case 'time':
           return (a.preparationTime || 0) - (b.preparationTime || 0);
         default:
@@ -88,16 +97,14 @@ export class List implements OnInit {
     this.showFavoritesOnly = !this.showFavoritesOnly;
     this.filterRecipes();
   }
+
   isLoggedIn(): boolean {
-    const result = this.authService.isLoggedIn();
-    console.log('✅ isLoggedIn():', result);
-    return result;
+    return this.authService.isLoggedIn();
   }
-    isAdmin(): boolean {
+
+  isAdmin(): boolean {
     const user = this.authService.getCurrentUser();
-    const result = user?.role === 'ADMIN';
-    console.log('✅ isAdmin():', result, 'User:', user);
-    return result;
+    return user?.role === 'ADMIN';
   }
 
   // Clear search
@@ -115,13 +122,13 @@ export class List implements OnInit {
     this.filterRecipes();
   }
 
-  // Toggle favorite
-  toggleFavorite(recette: Recette) {
+  // Toggle favorite local
+  toggleFavorite(recette: RecipeDTO) {
     recette.isFavorite = !recette.isFavorite;
   }
 
   // Ouvrir la modal de confirmation
-  confirmDelete(recette: Recette) {
+  confirmDelete(recette: RecipeDTO) {
     this.recetteToDelete = recette;
   }
 
@@ -132,7 +139,7 @@ export class List implements OnInit {
 
   // Supprimer la recette
   deleteRecipe() {
-    if (this.recetteToDelete && this.recetteToDelete.id) {
+    if (this.recetteToDelete?.id) {
       this.recipeService.delete(this.recetteToDelete.id).subscribe(() => {
         this.loadRecipes();
         this.recetteToDelete = undefined;

@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../auth/services/auth.service';
-import { RecipeService, Recette } from '../../recipes/services/recipe.service';
+import { RecipeService } from '../../recipes/services/recipe.service';
+
 import { User } from '../../auth/models/user.model';
+import { RecipeDTO } from '../../recipes/models/recipe.models';
 
 @Component({
   selector: 'app-user-layout',
@@ -29,32 +31,34 @@ export class UserLayoutComponent implements OnInit {
   private originalUser: User = { ...this.user };
 
   // ======== RECETTE ACTUELLE ========
-  recette: Recette | any = {
+  recette: RecipeDTO = {
     id: 0,
-    titre: '',
+    title: '',
     description: '',
-    ingredients: '',
-    isFavorite: false,
-    videoUrl: '',
-    imageUrl: '',
-    category: '',
     preparationTime: 0,
-    portions: 0,
-    difficulty: '',
-    rating: 0,
-    comments: '',
-    createdAt: new Date()
+    cookingTime: 0,
+    difficulty: 'FACILE',
+    imageUrl: '',
+    steps: '',
+    servings: 0,
+    ingredients: [],
+    categoryId: undefined,
+    categoryName: '',
+    favoritesCount: 0,
+    viewsCount: 0,
+    createdAt: new Date().toISOString(),
+    isFavorite: false
   };
 
   // ======== LISTE DES RECETTES ========
-  recettes: Recette[] = [];
-  filteredRecettes: Recette[] = [];
-  recetteToDelete?: Recette;
+  recettes: RecipeDTO[] = [];
+  filteredRecettes: RecipeDTO[] = [];
+  recetteToDelete?: RecipeDTO;
 
-  searchTerm: string = '';
-  selectedCategory: string = '';
-  showFavoritesOnly: boolean = false;
-  sortBy: string = '';
+  searchTerm = '';
+  selectedCategory: string | number = '';
+  showFavoritesOnly = false;
+  sortBy = '';
 
   // ======== ÉTATS ========
   favoritesCount = 0;
@@ -104,7 +108,7 @@ export class UserLayoutComponent implements OnInit {
   save() {
     this.isLoading = true;
 
-    // Simulation — remplacer par updateProfile() si besoin
+    // Simulation — tu peux remplacer par updateUser()
     setTimeout(() => {
       this.originalUser = { ...this.user };
       this.isEditing = false;
@@ -135,20 +139,29 @@ export class UserLayoutComponent implements OnInit {
 
   loadRecipes() {
     this.recipeService.getAll().subscribe(data => {
-      this.recettes = data;
+      this.recettes = data.map(r => ({
+        ...r,
+        isFavorite: r.isFavorite ?? false
+      }));
       this.filterRecipes();
     });
   }
 
   filterRecipes() {
     this.filteredRecettes = this.recettes.filter(recette => {
-      const matchesSearch = !this.searchTerm || 
-        recette.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        recette.description.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
-      const matchesCategory = !this.selectedCategory || recette.category === this.selectedCategory;
-      const matchesFavorite = !this.showFavoritesOnly || recette.isFavorite;
-      
+      const search = this.searchTerm.toLowerCase();
+
+      const matchesSearch =
+        !this.searchTerm ||
+        recette.title.toLowerCase().includes(search) ||
+        recette.description.toLowerCase().includes(search);
+
+      const matchesCategory =
+        !this.selectedCategory || recette.categoryId === Number(this.selectedCategory);
+
+      const matchesFavorite =
+        !this.showFavoritesOnly || recette.isFavorite === true;
+
       return matchesSearch && matchesCategory && matchesFavorite;
     });
 
@@ -161,13 +174,18 @@ export class UserLayoutComponent implements OnInit {
     this.filteredRecettes.sort((a, b) => {
       switch (this.sortBy) {
         case 'recent':
-          return (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0);
+          return new Date(b.createdAt || '').getTime() -
+                 new Date(a.createdAt || '').getTime();
+
         case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
+          return (b.favoritesCount || 0) - (a.favoritesCount || 0);
+
         case 'name':
-          return a.titre.localeCompare(b.titre);
+          return a.title.localeCompare(b.title);
+
         case 'time':
           return (a.preparationTime || 0) - (b.preparationTime || 0);
+
         default:
           return 0;
       }
@@ -178,12 +196,8 @@ export class UserLayoutComponent implements OnInit {
     this.showFavoritesOnly = !this.showFavoritesOnly;
     this.filterRecipes();
   }
-  toggleFavorites() {
-    this.showFavoritesOnly = !this.showFavoritesOnly;
-    this.filterRecipes();
-  }
 
-  toggleFavorite(recette: Recette) {
+  toggleFavorite(recette: RecipeDTO) {
     if (!this.isLoggedIn()) return;
     recette.isFavorite = !recette.isFavorite;
   }
@@ -196,7 +210,7 @@ export class UserLayoutComponent implements OnInit {
     this.filterRecipes();
   }
 
-  confirmDelete(recette: Recette) {
+  confirmDelete(recette: RecipeDTO) {
     if (this.isAdmin()) {
       this.recetteToDelete = recette;
     }

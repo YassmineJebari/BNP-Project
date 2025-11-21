@@ -4,32 +4,32 @@
   <div class="recipe-hero-green">
     <div class="hero-green-pattern"></div>
     <div class="hero-image-section" *ngIf="recette.imageUrl">
-      <img [src]="recette.imageUrl" [alt]="recette.titre" class="hero-image-blend" />
+      <img [src]="recette.imageUrl" [alt]="recette.title" class="hero-image-blend" />
     </div>
     <div class="hero-content-overlay">
       <div class="hero-icon-big">🍽️</div>
       <div class="hero-text-white">
-        <h1 class="recipe-main-title-white">{{ recette.titre }}</h1>
+        <h1 class="recipe-main-title-white">{{ recette.title }}</h1>
         
         <!-- RATING STARS dans le hero -->
         <div class="hero-rating">
           <span class="stars-big">
-            <span *ngFor="let star of [1,2,3,4,5]" class="star-big" [class.filled]="star <= (recette.rating || 0)">
-              {{ star <= (recette.rating || 0) ? '⭐' : '☆' }}
+            <span *ngFor="let star of [1,2,3,4,5]" class="star-big" [class.filled]="star <= (recette.isFavorite ? 5 : 0)">
+              {{ star <= (recette.isFavorite ? 5 : 0) ? '⭐' : '☆' }}
             </span>
           </span>
-          <span class="rating-text-white">({{ recette.rating || 0 | number:'1.1-1' }}) - {{ recette.comments?.length || 0 }} avis</span>
+          <span class="rating-text-white">({{ comments.length }}) avis</span>
         </div>
 
         <div class="recipe-badges-white">
           <span class="badge-white badge-time">⏱️ {{ recette.preparationTime || 30 }} min</span>
-          <span class="badge-white badge-portions">👥 {{ recette.portions || 4 }} portions</span>
-          <span class="badge-white badge-difficulty">📊 {{ recette.difficulty || 'Facile' }}</span>
+          <span class="badge-white badge-portions">👥 {{ recette.servings || 4 }} portions</span>
+          <span class="badge-white badge-difficulty">📊 {{ recette.difficulty || 'FACILE' }}</span>
           <button 
             class="btn-favorite-detail" 
             [class.is-favorite]="recette.isFavorite"
             (click)="toggleFavorite()"
-            >
+          >
             {{ recette.isFavorite ? '❤️' : '🤍' }} 
           </button>
         </div>
@@ -39,26 +39,21 @@
 
   <!-- CONTENT GRID -->
   <div class="detail-grid">
+
     <!-- TIMER DE CUISINE -->
     <div class="detail-section timer-section">
       <h2 class="section-title">
         <span class="title-icon">⏱️</span>
-        Temps de preparation
+        Temps de préparation
       </h2>
       <div class="timer-container">
         <div class="timer-display">
           <span class="timer-digits">{{ formatTime(timeLeft) }}</span>
         </div>
         <div class="timer-controls">
-          <button class="btn-timer" (click)="startTimer()" *ngIf="!timerRunning">
-            ▶  Démarrer 
-          </button>
-          <button class="btn-timer btn-pause" (click)="pauseTimer()" *ngIf="timerRunning">
-            ⏸  Pause
-          </button>
-          <button class="btn-timer btn-reset" (click)="resetTimer()">
-            Réinitialiser
-          </button>
+          <button class="btn-timer" (click)="startTimer()" *ngIf="!timerRunning">▶ Démarrer</button>
+          <button class="btn-timer btn-pause" (click)="pauseTimer()" *ngIf="timerRunning">⏸ Pause</button>
+          <button class="btn-timer btn-reset" (click)="resetTimer()">Réinitialiser</button>
         </div>
       </div>
     </div>
@@ -67,27 +62,16 @@
     <div class="detail-section shopping-list-section">
       <h2 class="section-title">
         <span class="title-icon">🛒</span>
-        Ingredients
+        Ingrédients
       </h2>
       <div class="shopping-actions">
-        <button class="btn btn-primary" (click)="generateShoppingList()">
-          📝 Générer la liste
-        </button>
-        <button class="btn btn-secondary" (click)="printShoppingList()" *ngIf="shoppingList.length > 0">
-          🖨️ Imprimer
-        </button>
+        <button class="btn btn-primary" (click)="generateShoppingList()">📝 Générer la liste</button>
+        <button class="btn btn-secondary" (click)="printShoppingList()" *ngIf="shoppingList.length > 0">🖨️ Imprimer</button>
       </div>
       <ul class="shopping-list" *ngIf="shoppingList.length > 0">
         <li *ngFor="let item of shoppingList; let i = index" class="shopping-item">
-          <input 
-            type="checkbox" 
-            [id]="'item-' + i" 
-            [(ngModel)]="item.checked"
-            class="shopping-checkbox"
-          />
-          <label [for]="'item-' + i" [class.checked]="item.checked">
-            {{ item.name }}
-          </label>
+          <input type="checkbox" [id]="'item-' + i" [(ngModel)]="item.checked" class="shopping-checkbox"/>
+          <label [for]="'item-' + i" [class.checked]="item.checked">{{ item.name }}</label>
         </li>
       </ul>
     </div>
@@ -119,39 +103,19 @@
       </div>
     </div>
 
+    <!-- ÉTAPES DE PRÉPARATION -->
     <div class="detail-section">
       <h2 class="section-title">
         <span class="title-icon">👨‍🍳</span>
         Étapes de Préparation
       </h2>
       <div class="steps-container">
-        <div class="step-card">
+        <div class="step-card" *ngFor="let step of recette.steps.split('\n'); let i = index">
           <div class="step-number-wrapper">
-            <span class="step-number">1</span>
+            <span class="step-number">{{ i + 1 }}</span>
           </div>
           <div class="step-content">
-            <h3 class="step-title">Préparation des ingrédients</h3>
-            <p class="step-text">Rassemblez et préparez tous les ingrédients nécessaires. Lavez et coupez les légumes si besoin.</p>
-          </div>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number-wrapper">
-            <span class="step-number">2</span>
-          </div>
-          <div class="step-content">
-            <h3 class="step-title">Cuisson</h3>
-            <p class="step-text">Suivez les instructions de cuisson en respectant les temps et températures indiqués dans la vidéo.</p>
-          </div>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number-wrapper">
-            <span class="step-number">3</span>
-          </div>
-          <div class="step-content">
-            <h3 class="step-title">Dressage et service</h3>
-            <p class="step-text">Dressez votre plat avec soin et servez chaud. Bon appétit !</p>
+            <p class="step-text">{{ step }}</p>
           </div>
         </div>
       </div>
@@ -161,8 +125,7 @@
     <div class="detail-section comments-section">
       <h2 class="section-title">
         <span class="title-icon">💬</span>
-        Commentaires & Avis
-        <span class="comments-count">({{ recette.comments?.length || 0 }})</span>
+        Commentaires & Avis <span class="comments-count">({{ comments.length }})</span>
       </h2>
 
       <!-- ADD COMMENT FORM -->
@@ -182,18 +145,8 @@
           </span>
         </div>
         <div class="comment-form">
-          <input
-            type="text"
-            class="form-input"
-            [(ngModel)]="newComment.author"
-            placeholder="Votre nom"
-          />
-          <textarea
-            class="form-textarea"
-            [(ngModel)]="newComment.text"
-            placeholder="Votre commentaire..."
-            rows="3"
-          ></textarea>
+          <input type="text" class="form-input" [(ngModel)]="newComment.author" placeholder="Votre nom"/>
+          <textarea class="form-textarea" [(ngModel)]="newComment.text" placeholder="Votre commentaire..." rows="3"></textarea>
           <button class="btn btn-primary" (click)="addComment()" [disabled]="!newComment.author || !newComment.text || newComment.rating === 0">
             💬 Publier mon avis
           </button>
@@ -201,8 +154,8 @@
       </div>
 
       <!-- COMMENTS LIST -->
-      <div class="comments-list" *ngIf="recette.comments && recette.comments.length > 0">
-        <div class="comment-card" *ngFor="let comment of recette.comments">
+      <div class="comments-list" *ngIf="comments.length > 0">
+        <div class="comment-card" *ngFor="let comment of comments">
           <div class="comment-header">
             <div class="comment-avatar">{{ comment.author.charAt(0).toUpperCase() }}</div>
             <div class="comment-meta">
@@ -219,7 +172,7 @@
         </div>
       </div>
 
-      <p class="no-comments" *ngIf="!recette.comments || recette.comments.length === 0">
+      <p class="no-comments" *ngIf="comments.length === 0">
         Aucun commentaire pour le moment. Soyez le premier à donner votre avis !
       </p>
     </div>
