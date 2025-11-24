@@ -67,13 +67,60 @@
   border: 1px solid #0FAC71 ;
 }
 
+/* ========== 🔥 HEADER RECETTES AVEC BOUTON AJOUTER ========== */
+.recipes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.recipes-header-text h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.recipes-header-text p {
+  margin: 0;
+  color: #666;
+}
+
+/* ========== 🔥 BOUTON AJOUTER (NOUVEAU) ========== */
+.btn-add {
+  background: #0FAC71;
+  color: white;
+  padding: 0.9rem 1.8rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(15, 172, 113, 0.3);
+}
+
+.btn-add:hover {
+  background: #0d8a5a;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(15, 172, 113, 0.4);
+}
+
 /* ===== RECIPES GRID ===== */
 .recipes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
   margin-bottom: 3rem;
-  margin-top: 3rem;
 }
 
 /* ===== RECIPE CARD ===== */
@@ -174,8 +221,6 @@
 .btn-favorite.is-favorite {
   animation: heartbeat 0.6s ease;
 }
-
-/* ===== CARD HEADER (SUPPRIMÉ - remplacé par l'image) ===== */
 
 @keyframes heartbeat {
   0%, 100% { transform: scale(1); }
@@ -311,24 +356,24 @@
   white-space: nowrap;
 }
 
-/* ===== CARD FOOTER ===== */
+/* ========== 🔥 CARD FOOTER (3 BOUTONS) ========== */
 .recipe-card-footer {
   padding: 1rem 1.2rem;
   background: var(--bnp-gray-light);
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
   border-top: 2px solid var(--bnp-border);
 }
 
 .btn-action {
-  flex: 1;
   padding: 0.7rem 0.8rem;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -352,10 +397,47 @@
   color: white;
 }
 
+/* ========== 🔥 BOUTON MODIFIER (NOUVEAU) ========== */
+.btn-edit {
+  background: white;
+  color: #3498db;
+  border: 1px solid #3498db;
+}
+
+.btn-edit:hover {
+  background: #3498db;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ========== BOUTON SUPPRIMER ========== */
+.btn-delete {
+  background: #ffffff;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #b91c1c;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.06);
+  transform: translateY(-2px);
+}
+
+/* ========== 🔥 EMPTY STATE ========== */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #999;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
 /* ===== GRID UTILISATEURS ===== */
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
   margin-top: 1.5rem;
 }
@@ -462,44 +544,9 @@
   justify-content: flex-end;
 }
 
-/* (optionnel si tu ne les as pas déjà pour les recettes) */
-.btn-action {
-  padding: 0.55rem 1.1rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-delete {
-  background: #ffffff;
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #b91c1c;
-}
-.btn-delete:hover {
-  background: rgba(239, 68, 68, 0.06);
-}
-
-/* GRID RECETTES : max 4 par ligne */
-.recipes-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 colonnes max */
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-/* GRID UTILISATEURS : max 4 par ligne */
-.users-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 colonnes max */
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
 /* Décaler le titre "Gestion des utilisateurs" vers le bas */
 .utilisateurs-section h2 {
-  margin-top: 20px;   /* tu peux mettre 30px ou 40px si tu veux plus d’espace */
+  margin-top: 20px;
 }
 
 .recettes-section h2 {

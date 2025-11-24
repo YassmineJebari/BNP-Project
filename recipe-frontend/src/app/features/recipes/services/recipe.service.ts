@@ -86,6 +86,11 @@ export class RecipeService {
     return this.http.put<RecipeDTO>(`${this.apiUrl}/${id}`, request);
   }
 
+  // PUT : Mettre à jour une recette (admin)
+  updateRecipeByAdmin(id: number, request: UpdateRecipeRequest): Observable<RecipeDTO> {
+    return this.http.put<RecipeDTO>(`${this.apiUrl}/admin/${id}`, request);
+  }
+
   // DELETE : Supprimer une recette (auteur uniquement)
   delete(id: number): Observable<string> {
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });

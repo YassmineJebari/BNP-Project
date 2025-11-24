@@ -204,7 +204,73 @@ public class RecipeService {
         Recipe updated = recipeRepository.save(recipe);
         return convertToDTO(updated);
     }
-    
+
+    public RecipeDTO updateRecipeByAdmin(Long id, UpdateRecipeRequest request) {
+        // Récupérer la recette
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
+        
+        // ⚠️ Ici PAS de vérification de l'auteur : l'admin peut tout modifier
+
+        // Mettre à jour les champs
+        if (request.getTitle() != null) {
+            recipe.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            recipe.setDescription(request.getDescription());
+        }
+        if (request.getPreparationTime() != null) {
+            recipe.setPreparationTime(request.getPreparationTime());
+        }
+        if (request.getCookingTime() != null) {
+            recipe.setCookingTime(request.getCookingTime());
+        }
+        if (request.getDifficulty() != null) {
+            recipe.setDifficulty(Difficulty.valueOf(request.getDifficulty().toUpperCase()));
+        }
+        if (request.getImageUrl() != null) {
+            recipe.setImageUrl(request.getImageUrl());
+        }
+        if (request.getSteps() != null) {
+            recipe.setSteps(request.getSteps());
+        }
+        if (request.getServings() != null) {
+            recipe.setServings(request.getServings());
+        }
+
+        // Mettre à jour la catégorie
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
+            recipe.setCategory(category);
+        }
+
+        // Mettre à jour les ingrédients si fournis
+        if (request.getIngredients() != null) {
+            // Supprimer les anciens ingrédients
+            recipeIngredientRepository.deleteByRecipeId(id);
+
+            // Ajouter les nouveaux
+            for (RecipeIngredientDTO ingredientDTO : request.getIngredients()) {
+                Ingredient ingredient = ingredientRepository.findById(ingredientDTO.getIngredientId())
+                        .orElseThrow(() -> new RuntimeException("Ingrédient non trouvé"));
+
+                RecipeIngredient recipeIngredient = new RecipeIngredient();
+                recipeIngredient.setRecipe(recipe);
+                recipeIngredient.setIngredient(ingredient);
+                recipeIngredient.setQuantity(ingredientDTO.getQuantity());
+                recipeIngredient.setUnit(ingredientDTO.getUnit());
+
+                recipeIngredientRepository.save(recipeIngredient);
+            }
+        }
+
+        // Sauvegarder et retourner le DTO
+        Recipe updated = recipeRepository.save(recipe);
+        return convertToDTO(updated);
+    }
+
+
     public void deleteRecipe(Long id, String username) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recette non trouvée"));

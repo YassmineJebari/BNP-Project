@@ -43,8 +43,16 @@
 
     <!-- Section Recettes -->
     <div *ngIf="activeTab === 'recettes'" class="recettes-section">
-      <h2>Gestion des recettes</h2>
-      <p>Total : {{ totalRecipes }} recettes</p>
+      <!-- 🔥 NOUVEAU : HEADER AVEC BOUTON AJOUTER -->
+      <div class="recipes-header">
+        <div class="recipes-header-text">
+          <h2>Gestion des recettes</h2>
+          <p>Total : {{ totalRecipes }} recettes</p>
+        </div>
+        <a routerLink="/recipes/add" class="btn-add">
+          ➕ Nouvelle Recette
+        </a>
+      </div>
 
       <div *ngIf="isLoadingRecipes" class="loader">
         Chargement des recettes...
@@ -54,7 +62,7 @@
         {{ recipesError }}
       </div>
 
-      <!-- GRID DE RECETTES AU FORMAT “CARDS” -->
+      <!-- GRID DE RECETTES AU FORMAT "CARDS" -->
       <div 
         class="recipes-grid" 
         *ngIf="!isLoadingRecipes && recipes.length; else noAdminRecipes"
@@ -122,29 +130,39 @@
             </div>
           </div>
 
-          <!-- PIED DE LA CARD : ACTIONS ADMIN -->
+          <!-- 🔥 PIED DE LA CARD : ACTIONS ADMIN (3 BOUTONS) -->
           <div class="recipe-card-footer">
             <button 
               class="btn-action btn-view" 
               [routerLink]="['/recipes/detail', r.id]"
             >
-              Voir plus
+              👁️ Voir
+            </button>
+
+            <button 
+              class="btn-action btn-edit" 
+              [routerLink]="['/recipes/edit', r.id]"
+            >
+              ✏️ Modifier
             </button>
 
             <button 
               class="btn-action btn-delete" 
               (click)="onDeleteRecipe(r.id)"
             >
-              Supprimer
+              🗑️ Supprimer
             </button>
           </div>
         </div>
       </div>
 
       <ng-template #noAdminRecipes>
-        <p *ngIf="!isLoadingRecipes && !recipes.length">
-          Aucune recette pour le moment.
-        </p>
+        <div class="empty-state" *ngIf="!isLoadingRecipes && !recipes.length">
+          <p>📭 Aucune recette pour le moment.</p>
+          <a routerLink="/recipes/add" class="btn-add">
+            ➕ Créer ma première recette
+          </a>
+        </div>
       </ng-template>
 
     </div>

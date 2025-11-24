@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecipeService } from '../../services/recipe.service';
 import { RecipeDTO, RecipeIngredientDTO, UpdateRecipeRequest } from '../../models/recipe.models';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-edit',
@@ -27,14 +28,17 @@ export class Edit implements OnInit {
 
   ingredientInput: string = '';
   id!: number;
+  isAdmin = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    this.isAdmin = this.authService.isAdmin(); 
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.recipeService.getRecipeById(this.id).subscribe(r => {
       if (r) {
@@ -76,8 +80,19 @@ export class Edit implements OnInit {
       ingredients: this.recette.ingredients
     };
 
-    this.recipeService.updateRecipe(this.id, updateRequest).subscribe(() => {
-      this.router.navigate(['/recipes']);
+    const update$ = this.isAdmin
+      ? this.recipeService.updateRecipeByAdmin(this.id, updateRequest)  // 🔹 admin
+      : this.recipeService.updateRecipe(this.id, updateRequest);        // 🔹 auteur
+
+    update$.subscribe({
+      next: () => {
+        this.router.navigate(['/layouts/admin-layout']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la mise à jour de la recette', err);
+        alert(err.error || "Impossible de mettre à jour la recette.");
+      }
     });
   }
+
 }
