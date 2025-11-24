@@ -104,9 +104,9 @@ public class RecipeController {
     public ResponseEntity<?> createRecipe(@Valid @RequestBody CreateRecipeRequest request) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String email = auth.getName();
             
-            RecipeDTO created = recipeService.createRecipe(request, username);
+            RecipeDTO created = recipeService.createRecipe(request, email);
             return ResponseEntity.ok(created);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -119,9 +119,9 @@ public class RecipeController {
     public ResponseEntity<?> updateRecipe(@PathVariable Long id, @Valid @RequestBody UpdateRecipeRequest request) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String email = auth.getName();
             
-            RecipeDTO updated = recipeService.updateRecipe(id, request, username);
+            RecipeDTO updated = recipeService.updateRecipe(id, request, email);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

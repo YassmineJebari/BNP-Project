@@ -101,11 +101,13 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
     
-    public RecipeDTO createRecipe(CreateRecipeRequest request, String username) {
+    public RecipeDTO createRecipe(CreateRecipeRequest request, String email) {
         // Récupérer l'utilisateur
-        User user = userRepository.findByUsername(username)
+        System.out.println("## In RecipeService.createRecipe ##"+email);
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         
+        System.out.println("hello");
         // Créer la recette
         Recipe recipe = new Recipe();
         recipe.setTitle(request.getTitle());
@@ -151,12 +153,12 @@ public class RecipeService {
         return convertToDTO(savedRecipe);
     }
     
-    public RecipeDTO updateRecipe(Long id, UpdateRecipeRequest request, String username) {
+    public RecipeDTO updateRecipe(Long id, UpdateRecipeRequest request, String email) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recette non trouvée"));
         
         // Vérifier que l'utilisateur est l'auteur
-        if (!recipe.getUser().getUsername().equals(username)) {
+        if (!recipe.getUser().getEmail().equals(email)) {
             throw new RuntimeException("Vous n'êtes pas autorisé à modifier cette recette");
         }
         
