@@ -4,6 +4,9 @@ import com.recipes.recipe_backend.dto.CreateRecipeRequest;
 import com.recipes.recipe_backend.dto.RecipeDTO;
 import com.recipes.recipe_backend.dto.UpdateRecipeRequest;
 import com.recipes.recipe_backend.gestion_recettes.service.RecipeService;
+import com.recipes.recipe_backend.gestion_utilisateur.entity.User;
+import com.recipes.recipe_backend.gestion_utilisateur.repository.UserRepository;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ public class RecipeController {
     
     @Autowired
     private RecipeService recipeService;
+
+    @Autowired
+    private UserRepository userRepository;
     
     // GET : Toutes les recettes (accessible à tous)
     @GetMapping
@@ -45,11 +51,13 @@ public class RecipeController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<RecipeDTO>> getMyRecipes() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Get-my-recipe : Utilisateur non trouvé"));
         
         // Récupérer l'ID de l'utilisateur via le username
         // Pour simplifier, on peut utiliser directement le service
-        return ResponseEntity.ok(recipeService.getRecipesByUserId(null)); // À adapter
+        return ResponseEntity.ok(recipeService.getRecipesByUserId(user.getId()));
     }
     
     // GET : Recettes par catégorie
