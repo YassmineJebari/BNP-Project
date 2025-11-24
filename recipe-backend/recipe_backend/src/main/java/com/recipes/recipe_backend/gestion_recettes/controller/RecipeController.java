@@ -128,6 +128,19 @@ public class RecipeController {
         }
     }
     
+    // PUT : Mettre à jour n'importe quelle recette (admin uniquement)
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateRecipeByAdmin(@PathVariable Long id,
+                                                @Valid @RequestBody UpdateRecipeRequest request) {
+        try {
+            RecipeDTO updated = recipeService.updateRecipeByAdmin(id, request);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // DELETE : Supprimer une recette (auteur uniquement)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")

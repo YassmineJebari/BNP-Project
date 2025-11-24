@@ -62,6 +62,22 @@
         ></textarea>
       </div>
 
+      <!-- ÉTAPES -->
+      <div class="form-group">
+        <label class="form-label" for="steps">
+          <span class="label-icon">🧾</span>
+          Étapes de préparation
+        </label>
+        <textarea
+          id="steps"
+          class="form-textarea"
+          [(ngModel)]="recette.steps"
+          name="steps"
+          placeholder="Décrivez les étapes de préparation..."
+          rows="6"
+        ></textarea>
+      </div>
+
       <!-- GRID pour Catégorie, Temps, Portions, Difficulté -->
       <div class="form-grid">
         <div class="form-group">
