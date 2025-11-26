@@ -103,11 +103,9 @@ public class RecipeService {
     
     public RecipeDTO createRecipe(CreateRecipeRequest request, String email) {
         // Récupérer l'utilisateur
-        System.out.println("## In RecipeService.createRecipe ##"+email);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         
-        System.out.println("hello");
         // Créer la recette
         Recipe recipe = new Recipe();
         recipe.setTitle(request.getTitle());

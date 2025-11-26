@@ -58,6 +58,9 @@ export class Detail implements OnInit, OnDestroy {
       if (r && r.preparationTime) {
         this.timeLeft = r.preparationTime * 60;
       }
+
+      this.generateShoppingList()
+
       // Charger les commentaires (simulés ici)
       this.comments = []; // À remplacer par un appel API si nécessaire
     });
