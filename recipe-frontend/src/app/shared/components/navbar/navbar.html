@@ -1,4 +1,3 @@
-
 <nav class="navbar">
   <div class="navbar-left">
     <span class="brand">logo</span>
@@ -10,21 +9,42 @@
   </div>
 
   <ul class="navbar-right">
-    <li>
-      <a routerLink="../../recipes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <!-- 
+      🔥 Bouton "Recettes" : visible SEULEMENT si :
+      - L'utilisateur n'est PAS connecté
+      - ET on n'est PAS sur sign-in ou sign-up
+    -->
+    <li *ngIf="!isLoggedIn() && !isOnAuthPage()">
+      <a routerLink="/recipes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         Recettes
       </a>
     </li>
-    <li>
-      <a routerLink="../../auth/sign-in" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+
+    <!-- 
+      🔥 Bouton "Se connecter" : visible SEULEMENT si NON connecté
+    -->
+    <li *ngIf="!isLoggedIn()">
+      <a routerLink="/auth/sign-in" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         Se connecter
       </a>
     </li>
-    <li>
-      <a routerLink="../../auth/sign-up" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+
+    <!-- 
+      🔥 Bouton "S'inscrire" : visible SEULEMENT si NON connecté
+    -->
+    <li *ngIf="!isLoggedIn()">
+      <a routerLink="/auth/sign-up" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="signup-btn">
         S'inscrire
       </a>
     </li>
+
+    <!-- 
+      🔥 Bouton "Se déconnecter" : visible SEULEMENT si connecté
+    -->
+    <li *ngIf="isLoggedIn()">
+      <button class="logout-btn" (click)="logout()">
+        Se déconnecter
+      </button>
+    </li>
   </ul>
 </nav>
-

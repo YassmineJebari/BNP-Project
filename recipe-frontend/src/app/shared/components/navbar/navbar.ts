@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { AuthService } from '../../../features/auth/services/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -10,28 +12,31 @@ import { RouterModule, Router } from '@angular/router';
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent {
-  isMenuOpen = false;
-  isLoggedIn = false; // Tu pourras connecter ça à ton AuthService plus tard
+  currentUrl = '';
 
-  constructor(private router: Router) {
-    // Vérifie si l'utilisateur est connecté (à adapter selon ton AuthService)
-    this.checkLoginStatus();
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {
+    // Écouter les changements de route
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.currentUrl = event.url;
+      });
   }
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 
-  checkLoginStatus() {
-    // TODO: Remplacer par ton AuthService
-    // this.isLoggedIn = this.authService.isLoggedIn();
-    this.isLoggedIn = true; // Pour l'instant, on simule un user connecté
+  isOnAuthPage(): boolean {
+    return this.currentUrl.includes('/auth/sign-in') || 
+           this.currentUrl.includes('/auth/sign-up');
   }
 
-  logout() {
-    // TODO: Implémenter la déconnexion avec ton AuthService
-    // this.authService.logout();
-    this.isLoggedIn = false;
+  logout(): void {
+    this.authService.logout();
     this.router.navigate(['/auth/sign-in']);
   }
 }
